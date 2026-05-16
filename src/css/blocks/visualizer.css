@@ -1,0 +1,10 @@
+.spread-visualizer {
+  position: relative;
+}
+.visualizer_background {
+  display: flex;
+  gap: -1px;
+}
+.visualizer_page {
+  border: 1px solid black;
+}

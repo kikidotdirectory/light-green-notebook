@@ -1,5 +1,6 @@
 {
   "imports": {
+    "@std/path": "jsr:@std/path@^1.1.4",
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.4/",
     "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts"
   },
