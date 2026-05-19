@@ -1,10 +1,64 @@
-.spread-visualizer {
-  position: relative;
+.visualizer_wrapper {
+	margin-right: 16px;
+}
+.visualizer {
+	position: relative;
+	aspect-ratio: 3/2;
 }
 .visualizer_background {
-  display: flex;
-  gap: -1px;
+	position: relative;
+	display: flex;
+	height: 100%;
 }
 .visualizer_page {
-  border: 1px solid black;
+	border: 1px solid black;
+	flex: 1 1 auto;
+}
+.visualizer_page.right {
+	border-left: none;
+}
+
+.visualizer_grid {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	padding: 6px;
+	display: grid;
+	grid-template-columns: repeat(4, 1fr) 3px repeat(4, 1fr);
+	grid-template-rows: repeat(4, 1fr);
+	gap: 3px;
+}
+
+.shape {
+	background: white;
+	border: 1px solid black;
+	cursor: pointer;
+}
+.shape-container {
+	grid-row: 1/-1;
+	grid-column: 1/-1;
+	display: grid;
+	grid-template-rows: subgrid;
+	grid-template-columns: subgrid;
+}
+.shape.top {
+	border-bottom: none;
+	/* add padding plus border to height */
+	height: calc(100% + 3px + 1px);
+}
+.shape.bot {
+	border-top: none;
+	/* add padding plus border to height */
+	height: calc(100% + 3px + 1px);
+	align-self: flex-end;
+}
+.shape:hover {
+	background-color: #f1f2f3;
+	transition: 0.2s;
+}
+.shape-container:has(.shape:hover) .shape {
+	background-color: #f1f2f3;
+	transition: 0.2s;
 }
