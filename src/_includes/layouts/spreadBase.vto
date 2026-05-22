@@ -4,13 +4,17 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Document</title>
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body>
 		<div class="notebook-viewer">
-			<div class="container"></div>
+			<div class="container">
+				<div class="image-container">
+					<img src="/assets/light-green-notebook/{{ img }}" alt="">
+				</div>
+			</div>
 			<div class="container annotations">
-				{{ comp.visualizer() }}
+				{{ content }}
 			</div>
 		</div>
 	</body>
