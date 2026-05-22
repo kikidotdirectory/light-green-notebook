@@ -30,46 +30,66 @@ class ProjectItem {
 		this.annotations = [];
 	}
 }
+class ProjectAnnotation {
+	desc: string;
+	date: string;
 
-const decoder = new TextDecoder("utf-8");
-const annotations = JSON.parse(decoder.decode(Deno.readFileSync("src/annotations.json")));
-
-const annotationsByPage = annotations;
-let annotationsList = [];
-
-let projectsList: ProjectKey[] = [];
-
-for (const page in annotationsByPage) {
-	for (const annotation of annotationsByPage[page]) {
-		const annotationProject = annotation.content.project;
-		console.log(annotationProject)
-		let index;
-
-		// if the annotation does not have a 'project', push it directly to annotationsList.
-		if (!annotationProject) {
-			annotationsList.push(annotation.content);
-		} else {
-			// if the annotation does have a `project`, first check if the project is already in annotationsList
-			// by checking if it's been added to the projectsList
-			const isIndexed = (project: ProjectKey) => project.name === annotationProject;
-			const keyIndex = projectsList.findIndex(isIndexed);
-			let projectIndex;
-
-			// if the project is not in the projectsList, add it to the annotationsList and store its key in the projectsList
-			if (keyIndex === -1) {
-				annotationsList.push(new ProjectItem(annotationProject));
-				projectIndex = annotationsList.length - 1;
-				projectsList.push(new ProjectKey(annotationProject, projectIndex));
-			} else {
-				projectIndex = projectsList[keyIndex].index
-			}
-
-			// annotationsList[projectIndex].annotations.push(annotation.content)
-		}
+	constructor(desc: string, date: string) {
+		this.desc = desc;
+		this.date = date;
 	}
 }
 
-console.log(annotationsList);
+export default function buildAnnotations() {
+	const decoder = new TextDecoder("utf-8");
+	const annotations = JSON.parse(decoder.decode(Deno.readFileSync("src/annotations.json")));
 
-// annotationsByPage.json
-// annotationsList.json
+	const annotationsByPage = annotations;
+	const annotationsList = [];
+
+	const projectsList: ProjectKey[] = [];
+
+	for (const page in annotationsByPage) {
+		for (const annotation of annotationsByPage[page]) {
+			const annotationProject = annotation.content.project;
+			const index = [];
+
+			// if the annotation does not have a 'project', push it directly to annotationsList.
+			if (!annotationProject) {
+				annotationsList.push(annotation.content);
+				index.push(annotationsList.length - 1);
+			} else {
+				// if the annotation does have a `project`, first check if the project is already in annotationsList
+				// by checking if it's been added to the projectsList
+				const isIndexed = (project: ProjectKey) => project.name === annotationProject;
+				const keyIndex = projectsList.findIndex(isIndexed);
+				let projectIndex;
+
+				// if the project is not in the projectsList, add it to the annotationsList and store its key in the projectsList
+				if (keyIndex === -1) {
+					annotationsList.push(new ProjectItem(annotationProject));
+					projectIndex = annotationsList.length - 1;
+					projectsList.push(new ProjectKey(annotationProject, projectIndex));
+				} else {
+					projectIndex = projectsList[keyIndex].index;
+				}
+
+				annotationsList[projectIndex].annotations.push(
+					new ProjectAnnotation(annotation.content.desc, annotation.content.date),
+				);
+
+				// store the index of Project and the annotation's index within it.
+				index.push(projectIndex);
+				index.push(annotationsList[projectIndex].annotations.length - 1);
+			}
+
+			// store the index within the annotation for use in annotationsByPage
+			annotation.index = index;
+		}
+	}
+
+	return {
+		annotationsList: annotationsList,
+		annotationsByPage: annotationsByPage,
+	};
+}
