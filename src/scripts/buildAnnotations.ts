@@ -42,6 +42,7 @@ let projectsList: ProjectKey[] = [];
 for (const page in annotationsByPage) {
 	for (const annotation of annotationsByPage[page]) {
 		const annotationProject = annotation.content.project;
+		console.log(annotationProject)
 		let index;
 
 		// if the annotation does not have a 'project', push it directly to annotationsList.
@@ -51,15 +52,19 @@ for (const page in annotationsByPage) {
 			// if the annotation does have a `project`, first check if the project is already in annotationsList
 			// by checking if it's been added to the projectsList
 			const isIndexed = (project: ProjectKey) => project.name === annotationProject;
-			let projectIndex = projectsList.findIndex(isIndexed);
+			const keyIndex = projectsList.findIndex(isIndexed);
+			let projectIndex;
 
 			// if the project is not in the projectsList, add it to the annotationsList and store its key in the projectsList
-			if (projectIndex === -1) {
+			if (keyIndex === -1) {
 				annotationsList.push(new ProjectItem(annotationProject));
 				projectIndex = annotationsList.length - 1;
 				projectsList.push(new ProjectKey(annotationProject, projectIndex));
+			} else {
+				projectIndex = projectsList[keyIndex].index
 			}
-			// annotationsList[projectIndex].annotations.push()
+
+			// annotationsList[projectIndex].annotations.push(annotation.content)
 		}
 	}
 }
