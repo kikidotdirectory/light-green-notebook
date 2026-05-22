@@ -1,8 +1,26 @@
 .notebook-viewer {
 	display: grid;
 	grid-template-columns: 1fr 30ch;
-	padding: 1rem;
+	padding: 16px;
+	gap: 8px;
 }
-.container {
+
+/* todo: work on responsiveness */
+@media (width < 50rem) {
+	.notebook-viewer {
+		display: block;
+	}
+	.container.annotations {
+		display: grid;
+		grid-template-columns: minmax(25ch, 0.2fr) 1fr;
+	}
+
+	.image-container {
+		aspect-ratio: 209/291;
+	}
+	.image-container img {
+		object-fit: cover;
+		object-position: right;
+		height: 100%;
+	}
 }
-.annotations {}

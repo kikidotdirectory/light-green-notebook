@@ -1,5 +1,6 @@
 .visualizer_wrapper {
-	margin-right: 16px;
+	margin-right: 1rem;
+	margin-bottom: 0.5rem;
 }
 .visualizer {
 	position: relative;
@@ -33,8 +34,11 @@
 
 .shape {
 	background: white;
-	border: 1px solid black;
-	cursor: pointer;
+	border: 0.0625rem solid black;
+	user-select: none;
+	display: flex;
+	align-items: center;
+	padding-left: 0.25rem;
 }
 .shape-container {
 	grid-row: 1/-1;
