@@ -1,14 +1,14 @@
 // annotations from annotations.json
 interface InputAnnotation {
-	"content": {
-		"project": string;
-		"desc": string;
-		"date": string;
-		"seeAlso"?: string;
+	content: {
+		project?: string;
+		desc: string;
+		date: string;
+		seeAlso?: string;
 	};
-	"shape": {
-		"columns": ("l1" | "l2" | "l3" | "l4" | "r1" | "r2" | "r3" | "r4")[];
-		"rows": (1 | 2 | 3 | 4)[];
+	shape: {
+		columns: ("l1" | "l2" | "l3" | "l4" | "r1" | "r2" | "r3" | "r4")[];
+		rows: (1 | 2 | 3 | 4)[];
 	};
 }
 
@@ -40,30 +40,6 @@ class AnnotationItem {
 	}
 }
 
-// lookup values for building annotations, not used to build pages
-class GroupLookupKey {
-	name: string;
-	key: number;
-
-	constructor(name: string, key: number) {
-		this.name = name;
-		this.key = key;
-	}
-}
-
-// identifier for a GroupKey, to be passed in alongside and containing AnnotationKeys
-class GroupKey {
-	name: string;
-	key: number;
-	annotations: number[];
-
-	constructor(name: string, index: number) {
-		this.name = name;
-		this.key = index;
-		this.annotations = [];
-	}
-}
-
 // content of Group containing metadata and associated annotations
 class GroupItem {
 	name: string;
@@ -76,48 +52,46 @@ class GroupItem {
 }
 
 const decoder = new TextDecoder("utf-8");
-const annotations = JSON.parse(decoder.decode(Deno.readFileSync("src/annotations.json")));
+const parsedAnnotations = JSON.parse(decoder.decode(Deno.readFileSync("src/annotations.json")));
 
-export const annotationsBySpread = annotations;
-export const annotationsList: (GroupItem | Annotation["content"])[] = [];
+export const annotationsList: (GroupItem | AnnotationItem)[] = [];
+export const annotationsBySpread: Record<number, AnnotationKey[]> = {};
 
-const projectsList: GroupKey[] = [];
+// tracks where each group lives in annotationsList so subsequent annotations from the same project can find it
+const groupIndex = new Map<string, number>();
 
-for (const spread in annotationsBySpread) {
-	for (const annotation of annotationsBySpread[spread]) {
-		const annotationProject = annotation.content.project;
-		const index = [];
+for (const spread in parsedAnnotations) {
+	const spreadNum = Number(spread);
+	annotationsBySpread[spreadNum] = [];
 
-		// if the annotation does not have a 'project', push it directly to annotationsList.
-		if (!annotationProject) {
-			annotationsList.push(annotation.content);
-			index.push(annotationsList.length - 1);
+	for (const annotation of parsedAnnotations[spread] as InputAnnotation[]) {
+		const project = annotation.content.project;
+
+		if (!project) {
+			// standalone annotation: push directly to annotationsList
+			annotationsList.push(new AnnotationItem(annotation.content));
+			const key = annotationsList.length - 1;
+			annotationsBySpread[spreadNum].push(new AnnotationKey(annotation, key));
 		} else {
-			// if the annotation does have a `project`, first check if the project is already in annotationsList
-			// by checking if it's been added to the projectsList
-			const isIndexed = (project: GroupKey) => project.name === annotationProject;
-			const keyIndex = projectsList.findIndex(isIndexed);
-			let projectIndex;
-
-			// if the project is not in the projectsList, add it to the annotationsList and store its key in the projectsList
-			if (keyIndex === -1) {
-				annotationsList.push(new GroupItem(annotationProject));
-				projectIndex = annotationsList.length - 1;
-				projectsList.push(new GroupKey(annotationProject, projectIndex));
-			} else {
-				projectIndex = projectsList[keyIndex].key;
+			// grouped annotation: find or create the GroupItem in annotationsList
+			let key = groupIndex.get(project);
+			if (key === undefined) {
+				annotationsList.push(new GroupItem(project));
+				key = annotationsList.length - 1;
+				groupIndex.set(project, key);
 			}
 
-			(annotationsList[projectIndex] as GroupItem).annotations.push(
-				new ProjectAnnotation(annotation.content.desc, annotation.content.date),
-			);
+			const group = annotationsList[key] as GroupItem;
+			group.annotations.push(new AnnotationItem(annotation.content));
+			const subKey = group.annotations.length - 1;
 
-			// store the index of Project and the annotation's index within it.
-			index.push(projectIndex);
-			index.push((annotationsList[projectIndex] as GroupItem).annotations.length - 1);
+			// if this group already has a key on this spread, append the subindex; otherwise create a new key
+			const existing = annotationsBySpread[spreadNum].find((k) => k.k1 === key);
+			if (existing) {
+				existing.k2!.push(subKey);
+			} else {
+				annotationsBySpread[spreadNum].push(new AnnotationKey(annotation, key, [subKey]));
+			}
 		}
-
-		// store the index within the annotation for use in annotationsByPage
-		annotation.index = index;
 	}
 }
