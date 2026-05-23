@@ -2,20 +2,30 @@
 layout: layouts/spreadBase.vto
 ---
 
-{{# check if the page has any annotations #}}
 {{ set spreadAnnotations = buildAnnotations.annotationsBySpread?.[spread] }}
+{{ set annotationsList = buildAnnotations.annotationsList }}
 
-{{ comp.visualizer() }}
+{{ comp.visualizer({ spreadAnnotations }) }}
 {{ if spreadAnnotations }}
 	<ol class="annotations-list">
-		{{ for annotation of spreadAnnotations }}
-			<li value="{{ annotation.index + 1 }}">
-				{{ if annotation.content.project }}
-					{{ annotationsList }}
+		{{ for a of spreadAnnotations }}
+			<li value="{{ a.k1 + 1 }}">
+				{{ if a.k2 }}
+					{{ annotationsList[a.k1].name }}
+					<ol>
+						{{ for sub of a.k2 }}
+							<li>
+								{{- annotationsList[a.k1].annotations[sub.subKey].desc -}}
+								{{ if annotationsList[a.k1].annotations[sub.subKey].date -}}
+									, <time>{{ annotationsList[a.k1].annotations[sub.subKey].date }}</time>
+								{{ /if }}
+							</li>
+						{{ /for }}
+					</ol>
 				{{ else }}
-					{{ annotation.content.desc -}}
-					{{ if annotation.content.date -}}
-						, <time>{{ annotation.content.date }}</time>
+					{{- annotationsList[a.k1].desc -}}
+					{{ if annotationsList[a.k1].date -}}
+						, <time>{{ annotationsList[a.k1].date }}</time>
 					{{ /if }}
 				{{ /if }}
 			</li>

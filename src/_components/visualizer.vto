@@ -5,11 +5,17 @@
 			<div class="visualizer_page right"></div>
 		</div>
 		<div class="visualizer_grid">
-			<div class="shape-container">
-				<div class="shape" style="grid-row: 2/-1; grid-column: 1/-1"></div>
-				<div class="shape top" style="grid-row: 1; grid-column: -5/-1"></div>
-			</div>
-			<div class="shape" style="grid-row: 1; grid-column: 1/span 4"></div>
+			{{ if spreadAnnotations }}
+				{{ for a of spreadAnnotations }}
+					{{ if a.k2 }}
+						{{ for sub of a.k2 }}
+							<div class="shape" style="grid-row: {{ sub.gridRowStart }}/{{ sub.gridRowEnd }}; grid-column: {{ sub.gridColStart }}/{{ sub.gridColEnd }}">{{ a.k1 + 1 }}</div>
+						{{ /for }}
+					{{ else }}
+						<div class="shape" style="grid-row: {{ a.gridRowStart }}/{{ a.gridRowEnd }}; grid-column: {{ a.gridColStart }}/{{ a.gridColEnd }}">{{ a.k1 + 1 }}</div>
+					{{ /if }}
+				{{ /for }}
+			{{ /if }}
 		</div>
 	</div>
 </div>
