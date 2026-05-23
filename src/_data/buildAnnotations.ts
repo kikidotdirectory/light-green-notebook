@@ -1,42 +1,77 @@
-class ProjectKey {
-	name: string;
-	index: number;
-
-	constructor(name: string, index: number) {
-		this.name = name;
-		this.index = index;
-	}
-}
-
-interface Annotation {
+// annotations from annotations.json
+interface InputAnnotation {
 	"content": {
 		"project": string;
 		"desc": string;
 		"date": string;
+		"seeAlso"?: string;
 	};
 	"shape": {
 		"columns": ("l1" | "l2" | "l3" | "l4" | "r1" | "r2" | "r3" | "r4")[];
 		"rows": (1 | 2 | 3 | 4)[];
 	};
-	index: number[];
 }
 
-class ProjectItem {
+// passed to page generation to lookup Annotations
+class AnnotationKey {
+	k1: number;
+	k2: number[] | undefined;
+	shape: {
+		columns: ("l1" | "l2" | "l3" | "l4" | "r1" | "r2" | "r3" | "r4")[];
+		rows: (1 | 2 | 3 | 4)[];
+	};
+	constructor(input: InputAnnotation, key: number, key2?: number[]) {
+		this.shape = input.shape;
+		this.k1 = key;
+		this.k2 = key2;
+	}
+}
+
+// content of annotations, to be accessed from the keys in AnnotationKey
+class AnnotationItem {
+	desc: string;
+	date: string;
+	seeAlso: string | undefined;
+
+	constructor(content: InputAnnotation["content"]) {
+		this.desc = content.desc;
+		this.date = content.date;
+		this.seeAlso = content.seeAlso ?? undefined;
+	}
+}
+
+// lookup values for building annotations, not used to build pages
+class GroupLookupKey {
 	name: string;
-	annotations: ProjectAnnotation[];
+	key: number;
+
+	constructor(name: string, key: number) {
+		this.name = name;
+		this.key = key;
+	}
+}
+
+// identifier for a GroupKey, to be passed in alongside and containing AnnotationKeys
+class GroupKey {
+	name: string;
+	key: number;
+	annotations: number[];
+
+	constructor(name: string, index: number) {
+		this.name = name;
+		this.key = index;
+		this.annotations = [];
+	}
+}
+
+// content of Group containing metadata and associated annotations
+class GroupItem {
+	name: string;
+	annotations: AnnotationItem[];
 
 	constructor(projectName: string) {
 		this.name = projectName;
 		this.annotations = [];
-	}
-}
-class ProjectAnnotation {
-	desc: string;
-	date: string;
-
-	constructor(desc: string, date: string) {
-		this.desc = desc;
-		this.date = date;
 	}
 }
 
@@ -44,12 +79,12 @@ const decoder = new TextDecoder("utf-8");
 const annotations = JSON.parse(decoder.decode(Deno.readFileSync("src/annotations.json")));
 
 export const annotationsBySpread = annotations;
-export const annotationsList: (ProjectItem | Annotation["content"])[] = [];
+export const annotationsList: (GroupItem | Annotation["content"])[] = [];
 
-const projectsList: ProjectKey[] = [];
+const projectsList: GroupKey[] = [];
 
-for (const page in annotationsBySpread) {
-	for (const annotation of annotationsBySpread[page]) {
+for (const spread in annotationsBySpread) {
+	for (const annotation of annotationsBySpread[spread]) {
 		const annotationProject = annotation.content.project;
 		const index = [];
 
@@ -60,30 +95,29 @@ for (const page in annotationsBySpread) {
 		} else {
 			// if the annotation does have a `project`, first check if the project is already in annotationsList
 			// by checking if it's been added to the projectsList
-			const isIndexed = (project: ProjectKey) => project.name === annotationProject;
+			const isIndexed = (project: GroupKey) => project.name === annotationProject;
 			const keyIndex = projectsList.findIndex(isIndexed);
 			let projectIndex;
 
 			// if the project is not in the projectsList, add it to the annotationsList and store its key in the projectsList
 			if (keyIndex === -1) {
-				annotationsList.push(new ProjectItem(annotationProject));
+				annotationsList.push(new GroupItem(annotationProject));
 				projectIndex = annotationsList.length - 1;
-				projectsList.push(new ProjectKey(annotationProject, projectIndex));
+				projectsList.push(new GroupKey(annotationProject, projectIndex));
 			} else {
-				projectIndex = projectsList[keyIndex].index;
+				projectIndex = projectsList[keyIndex].key;
 			}
 
-			(annotationsList[projectIndex] as ProjectItem).annotations.push(
+			(annotationsList[projectIndex] as GroupItem).annotations.push(
 				new ProjectAnnotation(annotation.content.desc, annotation.content.date),
 			);
 
 			// store the index of Project and the annotation's index within it.
 			index.push(projectIndex);
-			index.push((annotationsList[projectIndex] as ProjectItem).annotations.length - 1);
+			index.push((annotationsList[projectIndex] as GroupItem).annotations.length - 1);
 		}
 
 		// store the index within the annotation for use in annotationsByPage
 		annotation.index = index;
 	}
 }
-
