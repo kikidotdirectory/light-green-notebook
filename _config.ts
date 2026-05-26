@@ -17,7 +17,12 @@ site.addEventListener("beforeUpdate", async (event) => {
 	}
 });
 
-site.add([".png"])
-site.add("style.css")
+site.filter("padStart", (num) => {
+	const size = 4;
+	return String(num).padStart(size, "0");
+});
+
+site.add([".png"]);
+site.add("style.css");
 
 export default site;
