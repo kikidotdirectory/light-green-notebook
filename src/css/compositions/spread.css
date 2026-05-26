@@ -1,6 +1,6 @@
 .notebook-viewer {
 	display: grid;
-	grid-template-columns: 1fr 30ch;
+	grid-template-columns: 1fr clamp(15ch, 22dvw, 30ch);
 	padding: 16px;
 	gap: 8px;
 }
