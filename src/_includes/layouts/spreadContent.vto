@@ -6,6 +6,12 @@ layout: layouts/spreadBase.vto
 {{ set annotationsList = buildAnnotations.annotationsList }}
 
 {{ comp.visualizer({ spreadAnnotations }) }}
+
+{{#
+this is not readable and i am so sorry
+todo: refactor this so each annotation has its own component-- should
+      be easier to read.
+#}}
 {{ if spreadAnnotations }}
 	<ol class="annotations-list">
 		{{ for a of spreadAnnotations }}
@@ -17,7 +23,9 @@ layout: layouts/spreadBase.vto
 							<li>
 								{{- annotationsList[a.k1].annotations[sub.subKey].desc -}}
 								{{ if annotationsList[a.k1].annotations[sub.subKey].date -}}
-									, <time>{{ annotationsList[a.k1].annotations[sub.subKey].date }}</time>
+									, <time>{{
+										annotationsList[a.k1].annotations[sub.subKey].date
+									}}.</time>
 								{{ /if }}
 							</li>
 						{{ /for }}
@@ -25,7 +33,7 @@ layout: layouts/spreadBase.vto
 				{{ else }}
 					{{- annotationsList[a.k1].desc -}}
 					{{ if annotationsList[a.k1].date -}}
-						, <time>{{ annotationsList[a.k1].date }}</time>
+						, <time>{{ annotationsList[a.k1].date }}.</time>
 					{{ /if }}
 				{{ /if }}
 			</li>
