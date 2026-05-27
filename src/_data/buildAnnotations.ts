@@ -14,7 +14,7 @@ interface InputAnnotation {
 
 const COL_MAP: Record<string, number> = {
 	l1: 1, l2: 2, l3: 3, l4: 4,
-	r1: 6, r2: 7, r3: 8, r4: 9,
+	r1: 9, r2: 8, r3: 7, r4: 6,
 };
 
 interface GridCoords {
