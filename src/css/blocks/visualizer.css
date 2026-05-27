@@ -37,9 +37,9 @@
 	border: 0.0625rem solid black;
 	user-select: none;
 	display: flex;
-	align-items: center;
-	padding-left: 0.25rem;
+	padding: 0.25rem;
 }
+
 .shape-container {
 	grid-row: 1/-1;
 	grid-column: 1/-1;
