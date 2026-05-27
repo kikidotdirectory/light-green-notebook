@@ -2,41 +2,52 @@
 layout: layouts/spreadBase.vto
 ---
 
-{{ set spreadAnnotations = buildAnnotations.annotationsBySpread?.[spread] }}
 {{ set annotationsList = buildAnnotations.annotationsList }}
 
-{{ comp.visualizer({ spreadAnnotations }) }}
+{{# One hidden block per spread; spreadBase.vto reveals the active one. #}}
+{{ for n of Array(spreadCount).keys() }}
+	{{ set spread = n + 1 }}
+	{{ set spreadAnnotations = buildAnnotations.annotationsBySpread?.[spread] }}
+	<div
+		class="annotation-block"
+		data-spread="{{ spread }}"
+		{{ if spread !== 1 }}
+			hidden{{ /if }}
+	>
+		{{ comp.visualizer({ spreadAnnotations }) }}
 
-{{#
-this is not readable and i am so sorry
-todo: refactor this so each annotation has its own component-- should
-      be easier to read.
-#}}
-{{ if spreadAnnotations }}
-	<ol class="annotations-list">
-		{{ for a of spreadAnnotations }}
-			<li value="{{ a.k1 + 1 }}">
-				{{ if a.k2 }}
-					{{ annotationsList[a.k1].name }}
-					<ol>
-						{{ for sub of a.k2 }}
-							<li>
-								{{- annotationsList[a.k1].annotations[sub.subKey].desc -}}
-								{{ if annotationsList[a.k1].annotations[sub.subKey].date -}}
-									, <time>{{
-										annotationsList[a.k1].annotations[sub.subKey].date
-									}}.</time>
-								{{ /if }}
-							</li>
-						{{ /for }}
-					</ol>
-				{{ else }}
-					{{- annotationsList[a.k1].desc -}}
-					{{ if annotationsList[a.k1].date -}}
-						, <time>{{ annotationsList[a.k1].date }}.</time>
-					{{ /if }}
-				{{ /if }}
-			</li>
-		{{ /for }}
-	</ol>
-{{ /if }}
+		{{#
+		this is not readable and i am so sorry
+		todo: refactor this so each annotation has its own component-- should
+		      be easier to read.
+		#}}
+		{{ if spreadAnnotations }}
+			<ol class="annotations-list">
+				{{ for a of spreadAnnotations }}
+					<li value="{{ a.k1 + 1 }}">
+						{{ if a.k2 }}
+							{{ annotationsList[a.k1].name }}
+							<ol>
+								{{ for sub of a.k2 }}
+									<li>
+										{{- annotationsList[a.k1].annotations[sub.subKey].desc -}}
+										{{ if annotationsList[a.k1].annotations[sub.subKey].date -}}
+											, <time>{{
+													annotationsList[a.k1].annotations[sub.subKey].date
+												}}.</time>
+										{{ /if }}
+									</li>
+								{{ /for }}
+							</ol>
+						{{ else }}
+							{{- annotationsList[a.k1].desc -}}
+							{{ if annotationsList[a.k1].date -}}
+								, <time>{{ annotationsList[a.k1].date }}.</time>
+							{{ /if }}
+						{{ /if }}
+					</li>
+				{{ /for }}
+			</ol>
+		{{ /if }}
+	</div>
+{{ /for }}

@@ -1,0 +1,19 @@
+.image-container {
+	position: relative;
+	max-width: 50rem;
+}
+.page-link {
+	position: absolute;
+	width: 50%;
+	height: 100%;
+	background: none;
+	border: none;
+	padding: 0;
+}
+.prev {
+	cursor: w-resize;
+}
+.next {
+	right: 0;
+	cursor: e-resize;
+}

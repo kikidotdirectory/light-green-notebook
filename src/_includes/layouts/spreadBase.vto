@@ -10,12 +10,56 @@
 		<div class="notebook-viewer">
 			<div class="container">
 				<div class="image-container">
-					<img src="/assets/light-green-notebook/spread_{{ spread |> padStart }}.png" alt="">
+					<button
+						type="button"
+						class="page-link prev"
+						aria-label="Previous spread"
+					>
+					</button>
+					<button type="button" class="page-link next" aria-label="Next spread">
+					</button>
+					<img
+						id="spread-image"
+						src="/assets/light-green-notebook/spread_{{ 1 |> padStart }}.png"
+						alt=""
+					>
 				</div>
 			</div>
 			<div class="container annotations">
 				{{ content }}
 			</div>
 		</div>
+		<script>
+		(() => {
+				const total = {{ spreadCount }};
+				const img = document.getElementById("spread-image");
+				const blocks = document.querySelectorAll(".annotation-block");
+				const pad = (n) => String(n).padStart(4, "0");
+				const src = (n) => `/assets/light-green-notebook/spread_${pad(n)}.png`;
+				let current = 1;
+
+				function show(n) {
+					current = Math.min(Math.max(n, 1), total);
+					img.src = src(current);
+					blocks.forEach((b) => {
+						b.hidden = Number(b.dataset.spread) !== current;
+					});
+					location.hash = current;
+					// preload neighbours so navigation doesn't flash a blank image
+					if (current > 1) new Image().src = src(current - 1);
+					if (current < total) new Image().src = src(current + 1);
+				}
+
+				document.querySelector(".prev").addEventListener("click", () => show(current - 1));
+				document.querySelector(".next").addEventListener("click", () => show(current + 1));
+				addEventListener("keydown", (e) => {
+					if (e.key === "ArrowLeft") show(current - 1);
+					if (e.key === "ArrowRight") show(current + 1);
+				});
+
+				const fromHash = Number(location.hash.slice(1));
+				show(Number.isInteger(fromHash) && fromHash >= 1 ? fromHash : 1);
+			})();
+		</script>
 	</body>
 </html>
