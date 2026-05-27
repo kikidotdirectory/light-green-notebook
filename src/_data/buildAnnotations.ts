@@ -37,14 +37,16 @@ function toGridCoords(shape: InputAnnotation["shape"]): GridCoords {
 
 // reference from annotationsBySpread to a grouped sub-annotation, with its own shape
 interface SubAnnotationRef extends GridCoords {
-	subKey: number;
+	annotationIndex: number;
+	// letter label derived from annotationIndex (0 -> "a", 1 -> "b", ...), stable across spreads
+	value: string;
 }
 
 // passed to page generation to lookup annotations
 class AnnotationKey {
-	k1: number;
+	listIndex: number;
 	// undefined = standalone; array = grouped, one entry per sub-annotation on this spread
-	k2: SubAnnotationRef[] | undefined;
+	subAnnotations: SubAnnotationRef[] | undefined;
 	// only set for standalone annotations
 	gridColStart: number | undefined;
 	gridColEnd: number | undefined;
@@ -52,7 +54,7 @@ class AnnotationKey {
 	gridRowEnd: number | undefined;
 
 	constructor(key: number, coords?: GridCoords) {
-		this.k1 = key;
+		this.listIndex = key;
 		if (coords) {
 			this.gridColStart = coords.gridColStart;
 			this.gridColEnd = coords.gridColEnd;
@@ -119,18 +121,23 @@ for (const spread in parsedAnnotations) {
 
 			const group = annotationsList[key] as GroupItem;
 			group.annotations.push(new AnnotationItem(annotation.content));
-			const subKey = group.annotations.length - 1;
-			const subRef: SubAnnotationRef = { subKey, ...coords };
+			const annotationIndex = group.annotations.length - 1;
+			const subRef: SubAnnotationRef = {
+				annotationIndex,
+				value: String.fromCharCode(annotationIndex + "a".charCodeAt(0)),
+				...coords,
+			};
 
 			// if this group already has a key on this spread, append the subRef; otherwise create a new key
-			const existing = annotationsBySpread[spreadNum].find((k) => k.k1 === key);
+			const existing = annotationsBySpread[spreadNum].find((k) => k.listIndex === key);
 			if (existing) {
-				existing.k2!.push(subRef);
+				existing.subAnnotations!.push(subRef);
 			} else {
 				const ak = new AnnotationKey(key);
-				ak.k2 = [subRef];
+				ak.subAnnotations = [subRef];
 				annotationsBySpread[spreadNum].push(ak);
 			}
 		}
 	}
 }
+console.log(annotationsBySpread)

@@ -1,6 +1,9 @@
 .annotations-list {
 	margin-left: 1.25rem;
 }
+.annotations-list ol {
+	list-style-type: lower-alpha;
+}
 .annotations-list time {
 	font-style: italic;
 }

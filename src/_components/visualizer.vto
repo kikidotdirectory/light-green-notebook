@@ -6,13 +6,13 @@
 		</div>
 		<div class="visualizer_grid">
 			{{ if spreadAnnotations }}
-				{{ for a of spreadAnnotations }}
-					{{ if a.k2 }}
-						{{ for sub of a.k2 }}
-							<div class="shape" style="grid-row: {{ sub.gridRowStart }}/{{ sub.gridRowEnd }}; grid-column: {{ sub.gridColStart }}/{{ sub.gridColEnd }}">{{ a.k1 + 1 }}</div>
+				{{ for entry of spreadAnnotations }}
+					{{ if entry.subAnnotations }}
+						{{ for sub of entry.subAnnotations }}
+							<div class="shape" style="grid-row: {{ sub.gridRowStart }}/{{ sub.gridRowEnd }}; grid-column: {{ sub.gridColStart }}/{{ sub.gridColEnd }}">{{ entry.listIndex + 1 }}{{ sub.value }}</div>
 						{{ /for }}
 					{{ else }}
-						<div class="shape" style="grid-row: {{ a.gridRowStart }}/{{ a.gridRowEnd }}; grid-column: {{ a.gridColStart }}/{{ a.gridColEnd }}">{{ a.k1 + 1 }}</div>
+						<div class="shape" style="grid-row: {{ entry.gridRowStart }}/{{ entry.gridRowEnd }}; grid-column: {{ entry.gridColStart }}/{{ entry.gridColEnd }}">{{ entry.listIndex + 1 }}</div>
 					{{ /if }}
 				{{ /for }}
 			{{ /if }}
