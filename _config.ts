@@ -5,6 +5,11 @@ import { buildCss } from "./src/scripts/buildCss.ts";
 const site = lume({
 	src: "./src",
 	dest: "./dist",
+	watcher: {
+		dependencies: {
+			"_data/buildAnnotations.ts": ["annotations.json"],
+		},
+	},
 });
 
 site.addEventListener("beforeBuild", async () => {
