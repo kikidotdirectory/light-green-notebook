@@ -1,6 +1,19 @@
-.image-container {
+body {
+	min-height: 100dvh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 10vh;
+}
+.notebook-viewer {
+	container: notebook-viewer / inline-size;
+	display: grid;
+	grid-template-columns: 20ch 50rem 20ch;
+	grid-template-areas: "notes-left notebook notes-right";
+}
+.notebook-container {
+	grid-area: notebook;
 	position: relative;
-	max-width: 50rem;
 }
 .page-link {
 	position: absolute;
@@ -16,4 +29,16 @@
 .next {
 	right: 0;
 	cursor: e-resize;
+}
+@media (width < calc(50rem + 20ch)) {
+	body {
+		align-items: start;
+	}
+	.notebook-viewer {
+		width: 100%;
+		max-width: 50rem;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
+		grid-template-areas: "notebook notebook" "notes-left notes-right";
+	}
 }
