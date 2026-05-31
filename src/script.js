@@ -8,6 +8,7 @@ let current = 0;
 function show(n) {
 	current = Math.min(Math.max(n, 0), total);
 	img.src = src(current);
+	img.dataset.spread = current;
 	blocks.forEach((b) => {
 		b.hidden = Number(b.dataset.spread) !== current;
 	});
