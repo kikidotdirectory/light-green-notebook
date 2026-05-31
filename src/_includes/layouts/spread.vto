@@ -1,0 +1,41 @@
+{{ layout "layouts/base.vto" }}
+	<div class="notebook-viewer">
+		<div class="notebook-container">
+			<button
+				type="button"
+				class="page-link prev"
+				aria-label="Previous spread"
+			>
+			</button>
+			<button type="button" class="page-link next" aria-label="Next spread">
+			</button>
+			<img
+				id="spread-image"
+				src="/assets/lgn/spread_{{ 1 |> padStart }}.png"
+				alt=""
+			>
+		</div>
+		{{ for n of Array(spreadCount).keys() }}
+			{{ set spread = n + 1 }}
+			{{ set spreadSection = buildAnnotations.sectionTitleBySpread?.[spread] }}
+			<div
+				class="annotation-block notes-left"
+				data-spread="{{ spread }}"
+				{{ if spread !== 1 }}hidden{{ /if }}
+			>
+				{{ if spreadSection?.left }}
+					<h2 class="section-title">{{ spreadSection.left.title }}</h2>
+				{{ /if }}
+			</div>
+			<div
+				class="annotation-block notes-right"
+				data-spread="{{ spread }}"
+				{{ if spread !== 1 }}hidden{{ /if }}
+			>
+				{{ if spreadSection?.right }}
+					<h2 class="section-title">{{ spreadSection.right.title }}</h2>
+				{{ /if }}
+			</div>
+		{{ /for }}
+	</div>
+{{ /layout }}

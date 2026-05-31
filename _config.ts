@@ -29,5 +29,6 @@ site.filter("padStart", (num) => {
 
 site.add([".png"]);
 site.add("style.css");
+site.add("script.js");
 
 export default site;
