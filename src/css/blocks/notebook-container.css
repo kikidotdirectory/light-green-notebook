@@ -2,6 +2,7 @@
 	grid-area: notebook;
 	justify-self: center;
 	position: relative;
+	overflow: visible;
 }
 .notebook-container[data-spread="0"] {
 	width: 52%;
@@ -13,7 +14,9 @@
 	}
 }
 .spread-image {
-	height: 100%;
+	height: var(--spread-height);
+	width: auto;
+	max-width: none;
 }
 .page-link {
 	position: absolute;

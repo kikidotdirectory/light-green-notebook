@@ -1,6 +1,6 @@
 const total = 110;
 const img = document.querySelector(".spread-image");
-const imgContainer = document.querySelector("notebook-container")
+const imgContainer = document.querySelector(".notebook-container")
 const blocks = document.querySelectorAll(".annotation-block");
 const pad = (n) => String(n).padStart(3, "0");
 const src = (n) => `/assets/lgn/${pad(n)}.png`;
