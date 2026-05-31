@@ -1,3 +1,11 @@
+:root {
+	--lgn-w-in: 5.75;
+	--lgn-h-in: 8.25;
+	--in-rem-ratio: 4.6rem;
+	--page-width: calc(var(--lgn-w-in) * var(--in-rem-ratio));
+	--spread-width: calc(2 * var(--page-width));
+	--spread-height: calc(var(--lgn-h-in) * var(--in-rem-ratio) + 0.1rem);
+}
 body {
 	min-height: 100dvh;
 	display: flex;
@@ -8,12 +16,9 @@ body {
 .notebook-viewer {
 	container: notebook-viewer / inline-size;
 	display: grid;
-	grid-template-columns: 20ch 50rem 20ch;
+	grid-template-columns: 20ch var(--spread-width) 20ch;
+	grid-template-rows: var(--spread-height);
 	grid-template-areas: "notes-left notebook notes-right";
-}
-.notebook-container {
-	grid-area: notebook;
-	position: relative;
 }
 .notes-left {
 	grid-area: notes-left;
@@ -21,28 +26,12 @@ body {
 .notes-right {
 	grid-area: notes-right;
 }
-.page-link {
-	position: absolute;
-	width: 50%;
-	height: 100%;
-	background: none;
-	border: none;
-	padding: 0;
-}
-.prev {
-	cursor: w-resize;
-}
-.next {
-	right: 0;
-	cursor: e-resize;
-}
 @media (width < calc(50rem + 20ch)) {
 	body {
 		align-items: start;
 	}
 	.notebook-viewer {
-		width: 100%;
-		max-width: 50rem;
+		max-width: var(--spread-width);
 		grid-template-columns: 1fr 1fr;
 		grid-template-rows: 1fr 1fr;
 		grid-template-areas: "notebook notebook" "notes-left notes-right";
