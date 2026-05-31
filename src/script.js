@@ -25,4 +25,4 @@ addEventListener("keydown", (e) => {
 });
 
 const fromHash = Number(location.hash.slice(1));
-show(Number.isInteger(fromHash) && fromHash >= 1 ? fromHash : 1);
+show(Number.isInteger(fromHash) && fromHash >= 0 ? fromHash : 0);
