@@ -1,5 +1,6 @@
 const total = 110;
-const img = document.getElementById("spread-image");
+const img = document.querySelector(".spread-image");
+const imgContainer = document.querySelector("notebook-container")
 const blocks = document.querySelectorAll(".annotation-block");
 const pad = (n) => String(n).padStart(3, "0");
 const src = (n) => `/assets/lgn/${pad(n)}.png`;
@@ -8,7 +9,7 @@ let current = 0;
 function show(n) {
 	current = Math.min(Math.max(n, 0), total);
 	img.src = src(current);
-	img.dataset.spread = current;
+	imgContainer.dataset.spread = current;
 	blocks.forEach((b) => {
 		b.hidden = Number(b.dataset.spread) !== current;
 	});

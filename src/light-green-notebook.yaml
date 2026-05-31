@@ -1,3 +1,5 @@
+dimensions: [5.75, 8.25] # in inches
+
 front_matter:
   - { id: cover,   kind: cover,    spread: 1, side: right }
   - { id: ifc,     kind: endpaper, spread: 2, side: left  }
@@ -5,7 +7,6 @@ front_matter:
   - { id: toc_l,   kind: toc,      spread: 3, side: left  }
   - { id: toc_r,   kind: toc,      spread: 3, side: right }
   - { id: leaf,    kind: leaf,     spread: 4, side: left  }
-
 numbered_start: { spread: 4, side: right }   # page 1 lives here
 
 sections:

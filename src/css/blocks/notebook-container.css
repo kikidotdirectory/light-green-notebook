@@ -1,0 +1,32 @@
+.notebook-container {
+	grid-area: notebook;
+	justify-self: center;
+	position: relative;
+}
+.notebook-container[data-spread="0"] {
+	width: 52%;
+	& .next {
+		width: 100%;
+	}
+	& .prev {
+		display: none;
+	}
+}
+.spread-image {
+	height: 100%;
+}
+.page-link {
+	position: absolute;
+	width: 50%;
+	height: 100%;
+	background: none;
+	border: none;
+	padding: 0;
+}
+.prev {
+	cursor: w-resize;
+}
+.next {
+	right: 0;
+	cursor: e-resize;
+}
