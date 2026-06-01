@@ -7,16 +7,28 @@ const src = (n) => `/assets/lgn/${pad(n)}.png`;
 let current = 0;
 
 function show(n) {
-	current = Math.min(Math.max(n, 0), total);
-	img.src = src(current);
-	imgContainer.dataset.spread = current;
+	const target = Math.min(Math.max(n, 0), total);
+	current = target;
+	const nextSrc = src(target);
+	// Gate the image + layout swap on the new image being decoded so they change
+	// in the same frame. Otherwise data-spread (which resizes the container for the
+	// cover) applies before the async image decode, briefly showing the old spread
+	// in the new layout — the 1→0 flash.
+	const loader = new Image();
+	loader.src = nextSrc;
+	const apply = () => {
+		if (current !== target) return; // superseded by a newer navigation
+		img.src = nextSrc;
+		imgContainer.dataset.spread = target;
+	};
+	loader.decode().then(apply, apply);
 	blocks.forEach((b) => {
-		b.hidden = Number(b.dataset.spread) !== current;
+		b.hidden = Number(b.dataset.spread) !== target;
 	});
-	location.hash = current;
+	location.hash = target;
 	// preload neighbours so navigation doesn't flash a blank image
-	if (current > 1) new Image().src = src(current - 1);
-	if (current < total) new Image().src = src(current + 1);
+	if (target > 0) new Image().src = src(target - 1);
+	if (target < total) new Image().src = src(target + 1);
 }
 
 document.querySelector(".prev").addEventListener("click", () => show(current - 1));
