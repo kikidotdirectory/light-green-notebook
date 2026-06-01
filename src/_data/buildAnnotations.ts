@@ -13,7 +13,7 @@ interface SectionTitle {
 }
 
 const decoder = new TextDecoder("utf-8");
-export const sections = parseYAML(
+export const lightGreenNotebook = parseYAML(
 	decoder.decode(Deno.readFileSync("src/light-green-notebook.yaml")),
 ) as Record<string, Section>;
 
@@ -26,8 +26,7 @@ export const sectionTitleBySpread: Record<
 	number,
 	{ left?: SectionTitle; right?: SectionTitle }
 > = {};
-for (const [key, section] of Object.entries(sections)) {
-	if (!section.title) continue;
+for (const [key, section] of Object.entries(lightGreenNotebook.sections)) {
 	const title: SectionTitle = { key, title: section.title, desc: section.desc };
 	for (const entry of section.pages) {
 		const startPage = Array.isArray(entry) ? entry[0] : entry;
