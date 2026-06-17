@@ -2,6 +2,11 @@
 	{{# separate css as markup_fmt cannot format variable use within style tags #}}
 	{{ include "./notebook-head.css" }}
 {{ /set }}
+{{ set head }}
+	<script>
+	{{ include "./notebook-head.js"}}
+	</script>
+{{ /set }}
 
 {{ layout "layouts/base.vto" }}
 	<div class="notebook-viewer">
@@ -16,7 +21,7 @@
 			</button>
 			<img
 				class="spread-image"
-				src="/assets/lgn/000.png"
+				src="/assets/{{ notebookData.uid }}/000.png"
 				data-spread="0"
 				alt=""
 			>

@@ -1,13 +1,10 @@
-const total = 110;
 const img = document.querySelector(".spread-image");
 const imgContainer = document.querySelector(".notebook-container")
 const blocks = document.querySelectorAll(".annotation-block");
-const pad = (n) => String(n).padStart(3, "0");
-const src = (n) => `/assets/lgn/${pad(n)}.png`;
 let current = 0;
 
 function show(n) {
-	const target = Math.min(Math.max(n, 0), total);
+	const target = Math.min(Math.max(n, 0), numPages);
 	current = target;
 	const nextSrc = src(target);
 	// Gate the image + layout swap on the new image being decoded so they change
@@ -28,7 +25,7 @@ function show(n) {
 	location.hash = target;
 	// preload neighbours so navigation doesn't flash a blank image
 	if (target > 0) new Image().src = src(target - 1);
-	if (target < total) new Image().src = src(target + 1);
+	if (target < numPages) new Image().src = src(target + 1);
 }
 
 document.querySelector(".prev").addEventListener("click", () => show(current - 1));

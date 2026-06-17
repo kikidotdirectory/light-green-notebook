@@ -7,6 +7,9 @@
 		{{ if css }}
 			{{ css |> inlinecss }}
 		{{ /if -}}
+		{{ if head }}
+			{{ head }}
+		{{ /if }}
 		<link rel="stylesheet" href="/style.css">
 		<script src="/script.js" type="module" defer></script>
 	</head>
