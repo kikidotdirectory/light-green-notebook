@@ -1,4 +1,7 @@
-dimensions: [5.75, 8.25] # [width, height] in inches
+uid: lgn
+dimensions: # in inches
+  width: 5.75
+  height: 8.25
 
 front_matter:
   - { id: cover,   kind: cover,    spread: 1, side: right }

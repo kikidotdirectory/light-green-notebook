@@ -25,13 +25,12 @@ body {
 }
 /* Center the image if it's the cover */
 .notebook-container[data-spread="0"] {
-	/* not 50% to account for the image padding, maybe there's a better way to do that? */
-	width: calc(var(--spread-width) * 0.52);
 	/* allow the cover to spill over for things like the ribbon */
 	overflow: visible;
+	max-width: none;
 	& .spread-image {
-		max-width: none;
 		height: var(--spread-height);
+		width: auto;
 	}
 	& .next {
 		width: 100%;
@@ -71,4 +70,3 @@ body {
 		grid-template-areas: "notebook notebook" "notes-left notes-right";
 	}
 }
-
