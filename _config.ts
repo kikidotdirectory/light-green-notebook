@@ -28,7 +28,7 @@ site.filter("padStart", (num) => {
 });
 
 site.filter("inlinecss", (css) => {
-	return `<style>\n${css}\n</style>\n`
+	return `<style>\n${css}</style>`
 })
 
 site.add([".png"]);
