@@ -14,14 +14,13 @@ interface SectionTitle {
 
 const decoder = new TextDecoder("utf-8");
 export const lightGreenNotebook = parseYAML(
-	decoder.decode(Deno.readFileSync("src/light-green-notebook.yaml")),
+	decoder.decode(Deno.readFileSync("src/_data/notebooks/light-green-notebook.yaml")),
 ) as Record<string, Section>;
 
 // Title to display, indexed by spread + page side. A title appears on the first
 // page of every contiguous run listed in `pages`; sections without a `title`
 // are skipped. Spread N is assumed to span pages (2N-1, 2N): odd page -> left,
-// even -> right. Adjust the page->spread math here if the physical book follows
-// a different convention.
+// even -> right.
 export const sectionTitleBySpread: Record<
 	number,
 	{ left?: SectionTitle; right?: SectionTitle }
