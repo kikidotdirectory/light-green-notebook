@@ -1,5 +1,11 @@
 :root {
-	--in-rem-ratio: {{ config["rem-per-inch"] }};
-	--notebook-width: {{ dimensions.width }};
-	--notebook-height: {{ dimensions.height }};
+	--in-rem-ratio: {{ config["rem-per-inch"] }}rem;
+	--notebook-width: 5.75;
+	--notebook-height: 8.25;
+	/* --notebook-width: {{# dimensions.width #}}; */
+	/* --notebook-height: {{# dimensions.height #}}; */
+	--page-width: calc(var(--notebook-width) * var(--in-rem-ratio));
+	--page-height: calc(var(--notebook-height) * var(--in-rem-ratio));
+	--spread-width: calc(2 * var(--page-width));
+	--spread-height: var(--page-height);
 }

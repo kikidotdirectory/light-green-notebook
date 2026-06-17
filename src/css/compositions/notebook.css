@@ -1,0 +1,74 @@
+body {
+	min-height: 100dvh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-bottom: 10vh;
+}
+.notebook-viewer {
+	container: notebook-viewer / inline-size;
+	display: grid;
+	grid-template-columns: 20ch var(--spread-width) 20ch;
+	grid-template-rows: var(--spread-height);
+	grid-template-areas: "notes-left notebook notes-right";
+}
+.notes-left {
+	grid-area: notes-left;
+}
+.notes-right {
+	grid-area: notes-right;
+}
+.notebook-container {
+	grid-area: notebook;
+	justify-self: center;
+	position: relative;
+}
+/* Center the image if it's the cover */
+.notebook-container[data-spread="0"] {
+	/* not 50% to account for the image padding, maybe there's a better way to do that? */
+	width: calc(var(--spread-width) * 0.52);
+	/* allow the cover to spill over for things like the ribbon */
+	overflow: visible;
+	& .spread-image {
+		max-width: none;
+		height: var(--spread-height);
+	}
+	& .next {
+		width: 100%;
+	}
+	& .prev {
+		display: none;
+	}
+}
+.spread-image {
+	width: 100%;
+	height: auto;
+}
+.page-link {
+	position: absolute;
+	width: 50%;
+	height: 100%;
+	background: none;
+	border: none;
+	padding: 0;
+}
+/* to-do, change these icons */
+.prev {
+	cursor: w-resize;
+}
+.next {
+	right: 0;
+	cursor: e-resize;
+}
+@media (width < calc(50rem + 20ch)) {
+	body {
+		align-items: start;
+	}
+	.notebook-viewer {
+		max-width: var(--spread-width);
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: 1fr 1fr;
+		grid-template-areas: "notebook notebook" "notes-left notes-right";
+	}
+}
+
