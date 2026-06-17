@@ -1,0 +1,5 @@
+:root {
+	--in-rem-ratio: {{ config["rem-per-inch"] }};
+	--notebook-width: {{ dimensions.width }};
+	--notebook-height: {{ dimensions.height }};
+}

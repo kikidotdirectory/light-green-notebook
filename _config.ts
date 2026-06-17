@@ -27,6 +27,10 @@ site.filter("padStart", (num) => {
 	return String(num).padStart(size, "0");
 });
 
+site.filter("inlinecss", (css) => {
+	return `<style>\n${css}\n</style>\n`
+})
+
 site.add([".png"]);
 site.add("style.css");
 site.add("script.js");

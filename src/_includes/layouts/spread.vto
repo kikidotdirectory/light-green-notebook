@@ -1,3 +1,8 @@
+{{ set css }}
+	{{# separate css as markup_fmt cannot format variable use within style tags #}}
+	{{ include "./notebook.css" }}
+{{ /set }}
+
 {{ layout "layouts/base.vto" }}
 	<div class="notebook-viewer">
 		<div class="notebook-container">
@@ -25,7 +30,7 @@
 				{{ if spread !== 1 }}hidden{{ /if }}
 			>
 				{{ if spreadSection?.left }}
-					<h2 class="section-title">{{ spreadSection.left.title }}</h2>
+					<p class="section-title">{{ spreadSection.left.title }}</p>
 				{{ /if }}
 			</div>
 			<div
