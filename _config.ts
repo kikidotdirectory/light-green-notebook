@@ -25,11 +25,6 @@ site.addEventListener("beforeUpdate", async (event) => {
 	}
 });
 
-site.filter("padStart", (num) => {
-	const size = 4;
-	return String(num).padStart(size, "0");
-});
-
 site.filter("inlinecss", (css) => {
 	return `<style>\n${css}</style>`
 })
