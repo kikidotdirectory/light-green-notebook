@@ -1,0 +1,23 @@
+<main>
+	<figure
+		class="notebook-viewer"
+		style="--in-rem-ratio: {{ config['rem-per-inch'] }}rem; --notebook-width: {{ notebookData.dimensions.width }}; --notebook-height: {{ notebookData.dimensions.height }}"
+	>
+		<div class="notebook-container">
+			<button
+				type="button"
+				class="page-link prev"
+				aria-label="Previous spread"
+			>
+			</button>
+			<button type="button" class="page-link next" aria-label="Next spread">
+			</button>
+			<img
+				class="spread-image"
+				src="/assets/{{ notebookData.uid }}/000.png"
+				data-spread="0"
+				alt=""
+			>
+		</div>
+	</figure>
+</main>

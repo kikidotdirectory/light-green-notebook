@@ -1,7 +1,3 @@
-{{ set css }}
-	{{# separate css as markup_fmt cannot format variable use within style tags #}}
-	{{ include "./notebook-head.css" }}
-{{ /set }}
 {{ set head }}
 	<script>
 	{{ include "./notebook-head.js"}}
@@ -9,44 +5,5 @@
 {{ /set }}
 
 {{ layout "layouts/base.vto" }}
-	<div class="notebook-viewer">
-		<div class="notebook-container">
-			<button
-				type="button"
-				class="page-link prev"
-				aria-label="Previous spread"
-			>
-			</button>
-			<button type="button" class="page-link next" aria-label="Next spread">
-			</button>
-			<img
-				class="spread-image"
-				src="/assets/{{ notebookData.uid }}/000.png"
-				data-spread="0"
-				alt=""
-			>
-		</div>
-		{{ for n of Array(spreadCount).keys() }}
-			{{ set spread = n + 1 }}
-			{{ set spreadSection = buildAnnotations.sectionTitleBySpread?.[spread] }}
-			<div
-				class="annotation-block notes-left"
-				data-spread="{{ spread }}"
-				{{ if spread !== 1 }}hidden{{ /if }}
-			>
-				{{ if spreadSection?.left }}
-					<p class="section-title">{{ spreadSection.left.title }}</p>
-				{{ /if }}
-			</div>
-			<div
-				class="annotation-block notes-right"
-				data-spread="{{ spread }}"
-				{{ if spread !== 1 }}hidden{{ /if }}
-			>
-				{{ if spreadSection?.right }}
-					<h2 class="section-title">{{ spreadSection.right.title }}</h2>
-				{{ /if }}
-			</div>
-		{{ /for }}
-	</div>
+	{{ comp notebookViewer {notebookData: notebookData} }} {{ /comp }}
 {{ /layout }}
