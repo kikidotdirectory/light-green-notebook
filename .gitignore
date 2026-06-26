@@ -1,5 +1,5 @@
 dist
 _cache
-style.css
+src/style.css
 .env
 .DS_Store
