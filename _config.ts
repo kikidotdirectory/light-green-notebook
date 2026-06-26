@@ -1,4 +1,5 @@
 import lume from "lume/mod.ts";
+import nav from "lume/plugins/nav.ts";
 
 import { buildCss } from "./src/scripts/buildCss.ts";
 
@@ -11,6 +12,8 @@ const site = lume({
 		},
 	},
 });
+
+site.use(nav());
 
 site.addEventListener("beforeBuild", async () => {
 	await buildCss("src/css/global.css", "src/style.css");
