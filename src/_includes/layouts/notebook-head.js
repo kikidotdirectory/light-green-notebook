@@ -1,3 +1,14 @@
-const numPages = 110;
-const pad = (n) => String(n).padStart(3, "0");
-const src = (n) => `/assets/{{ notebookData.uid }}/${pad(n)}.png`;
+function getPage() {
+	let notebookPage;
+	try {
+		notebookPage = localStorage.getItem(notebookID);
+	} catch (_error) {
+		return;
+	}
+
+	if (notebookPage) {
+		document.querySelector(".spread-image").src = notebookPage;
+	}
+}
+
+document.addEventListener("DOMContentLoaded", getPage);

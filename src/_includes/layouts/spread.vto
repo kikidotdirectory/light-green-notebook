@@ -2,7 +2,8 @@
 
 {{ set head }}
 	<script>
-	{{ include "./notebook-head.js"}}
+	const notebookID = "{{ notebookData.uid }}";
+	{{ include "./notebook-head.js" }}
 	</script>
 {{ /set }}
 
