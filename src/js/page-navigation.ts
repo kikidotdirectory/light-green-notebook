@@ -2,22 +2,43 @@ declare const assetsDir: string;
 declare const fileExt: string;
 declare const notebookID: string;
 declare const totalSpreads: number;
-declare let currentPageNum: number;
 declare function fileName(pageNum: number): string;
 
 interface NotebookState {
 	pageNum: number;
 }
 
-declare function getState(): NotebookState;
-declare function setState(partial: Partial<NotebookState>): void;
-
+let currentPageNum: number;
 const prev = document.querySelector(".page-link.prev") as HTMLButtonElement;
 const next = document.querySelector(".page-link.next") as HTMLButtonElement;
 const spreadImage = document.querySelector(".spread-image") as HTMLImageElement;
 
 prev?.addEventListener("click", () => toPage(-1));
 next?.addEventListener("click", () => toPage(1));
+
+function getState() {
+	try {
+		const raw = localStorage.getItem(notebookID);
+		return raw ? JSON.parse(raw) : { pageNum: 0 };
+	} catch {
+		return { pageNum: 0 };
+	}
+}
+
+function setState(partial: NotebookState) {
+	const updated = { ...getState(), ...partial };
+	localStorage.setItem(notebookID, JSON.stringify(updated));
+}
+
+function getPage() {
+	currentPageNum = getState().pageNum;
+	spreadImage.src = imgSrc(currentPageNum);
+	spreadImage.dataset.spread = currentPageNum.toString();
+}
+
+function imgSrc(pageNum: number) {
+	return assetsDir + fileName(pageNum) + "." + fileExt;
+}
 
 function toPage(delta: number) {
 	const dest = currentPageNum + delta;
@@ -41,3 +62,5 @@ function preloadPage(pageNum: number) {
 	img.src = imgSrc(pageNum);
 }
 
+// On page load, render notebook.
+getPage();
