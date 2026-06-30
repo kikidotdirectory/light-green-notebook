@@ -21,6 +21,7 @@ export default async function*({ notebooks }: Lume.Data) {
 		yield {
 			url: `/${notebook.uid}/`,
 			notebookData: notebook,
+			tags: ["notebook"],
 		};
 	}
 }
