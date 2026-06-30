@@ -1,4 +1,5 @@
 import lume from "lume/mod.ts";
+import esbuild from "lume/plugins/esbuild.ts";
 import nav from "lume/plugins/nav.ts";
 
 import { buildCss } from "./src/scripts/buildCss.ts";
@@ -13,7 +14,9 @@ const site = lume({
 	},
 });
 
-site.use(nav());
+site
+	.use(esbuild())
+	.use(nav());
 
 site.addEventListener("beforeBuild", async () => {
 	await buildCss("src/css/global.css", "src/style.css");
@@ -26,11 +29,11 @@ site.addEventListener("beforeUpdate", async (event) => {
 });
 
 site.filter("inlinecss", (css) => {
-	return `<style>\n${css}</style>`
-})
+	return `<style>\n${css}</style>`;
+});
 
 site.add([".png"]);
 site.add("style.css");
-site.add("script.js");
+site.add("js");
 
 export default site;
