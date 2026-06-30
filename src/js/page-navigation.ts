@@ -10,11 +10,12 @@ interface NotebookState {
 
 let currentPageNum: number;
 const prev = document.querySelector(".page-link.prev") as HTMLButtonElement;
-const next = document.querySelector(".page-link.next") as HTMLButtonElement;
+const nextButtons = document.querySelectorAll(".page-link.next") as NodeListOf<HTMLButtonElement>;
 const spreadImage = document.querySelector(".spread-image") as HTMLImageElement;
+const notebookViewer = document.querySelector(".notebook-viewer") as HTMLElement;
 
 prev?.addEventListener("click", () => toPage(-1));
-next?.addEventListener("click", () => toPage(1));
+nextButtons.forEach((next) => next.addEventListener("click", () => toPage(1)));
 
 function getState() {
 	try {
@@ -33,7 +34,7 @@ function setState(partial: NotebookState) {
 function getPage() {
 	currentPageNum = getState().pageNum;
 	spreadImage.src = imgSrc(currentPageNum);
-	spreadImage.dataset.spread = currentPageNum.toString();
+	notebookViewer.dataset.spread = currentPageNum.toString();
 }
 
 function imgSrc(pageNum: number) {
@@ -47,7 +48,7 @@ function toPage(delta: number) {
 
 	// change the page
 	currentPageNum = dest;
-	spreadImage.dataset.spread = currentPageNum.toString();
+	notebookViewer.dataset.spread = currentPageNum.toString();
 	spreadImage.src = imgSrc(currentPageNum);
 	setState({ pageNum: currentPageNum });
 
