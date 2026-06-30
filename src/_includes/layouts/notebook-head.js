@@ -15,6 +15,7 @@ function setState(partial) {
 function getPage() {
 	currentPageNum = getState().pageNum;
 	spreadImage.src = imgSrc(currentPageNum);
+	spreadImage.dataset.spread = currentPageNum;
 }
 
 function imgSrc(pageNum) {

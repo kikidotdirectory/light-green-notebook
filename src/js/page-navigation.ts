@@ -26,6 +26,7 @@ function toPage(delta: number) {
 
 	// change the page
 	currentPageNum = dest;
+	spreadImage.dataset.spread = currentPageNum.toString();
 	spreadImage.src = imgSrc(currentPageNum);
 	setState({ pageNum: currentPageNum });
 
