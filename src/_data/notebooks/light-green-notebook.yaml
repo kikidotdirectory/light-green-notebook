@@ -4,6 +4,9 @@ dimensions: # in inches
   width: 5.75
   height: 8.25
 
+totalSpreads: 110
+fileExt: png
+
 front_matter:
   - { id: cover,   kind: cover,    spread: 1, side: right }
   - { id: ifc,     kind: endpaper, spread: 2, side: left  }

@@ -1,14 +1,28 @@
-function getPage() {
-	let notebookPage;
+function getState() {
 	try {
-		notebookPage = localStorage.getItem(notebookID);
-	} catch (_error) {
-		return;
-	}
-
-	if (notebookPage) {
-		document.querySelector(".spread-image").src = notebookPage;
+		const raw = localStorage.getItem(notebookID);
+		return raw ? JSON.parse(raw) : { pageNum: 0 };
+	} catch {
+		return { pageNum: 0 };
 	}
 }
 
-document.addEventListener("DOMContentLoaded", getPage);
+function setState(partial) {
+	const updated = { ...getState(), ...partial };
+	localStorage.setItem(notebookID, JSON.stringify(updated));
+}
+
+function getPage() {
+	currentPageNum = getState().pageNum;
+	spreadImage.src = imgSrc(currentPageNum);
+}
+
+function imgSrc(pageNum) {
+	return assetsDir + fileName(pageNum) + "." + fileExt;
+}
+
+let spreadImage;
+document.addEventListener("DOMContentLoaded", () => {
+	spreadImage = document.querySelector(".spread-image");
+	getPage();
+});
