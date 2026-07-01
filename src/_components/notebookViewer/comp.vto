@@ -5,6 +5,21 @@
 		style="--in-rem-ratio: {{ config['rem-per-inch'] }}rem; --notebook-width: {{ notebookData.dimensions.width }}; --notebook-height: {{ notebookData.dimensions.height }}"
 	>
 		<div class="notebook-container">
+			<img
+				src="/assets/{{notebookData.uid}}/static/EP_L.png"
+				class="endpaper-left"
+			>
+			<img
+				src="/assets/{{notebookData.uid}}/static/EP_R.png"
+				class="endpaper-right"
+			>
+			<img
+				class="spread-image"
+				{{# todo, make this not hardcoded #}}
+				src="/assets/{{ notebookData.uid }}/0000.png"
+				data-spread="0"
+				alt=""
+			>
 			<button
 				type="button"
 				class="page-link prev"
@@ -17,14 +32,6 @@
 				aria-label="Next spread"
 			>
 			</button>
-
-			<img
-				class="spread-image"
-				{{# todo, make this not hardcoded #}}
-				src="/assets/{{ notebookData.uid }}/000.png"
-				data-spread="0"
-				alt=""
-			>
 		</div>
 		<div class="notebook-cover">
 			<button
@@ -36,7 +43,7 @@
 			<img
 				class="spread-image"
 				{{# todo, make this not hardcoded #}}
-				src="/assets/{{ notebookData.uid }}/000.png"
+				src="/assets/{{ notebookData.uid }}/0000.png"
 				data-spread="0"
 				alt=""
 			>

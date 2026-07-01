@@ -3,6 +3,7 @@
 	--page-height: calc(var(--notebook-height) * var(--in-rem-ratio));
 	--spread-width: calc(2 * var(--page-width));
 	--spread-height: var(--page-height);
+	user-select: none;
 	position: relative;
 	padding: var(--size-4-3) var(--size-4-3);
 	padding-bottom: var(--size-4-2);
@@ -15,14 +16,30 @@
 .notebook-container img {
 	width: 100%;
 }
+.spread-image {
+	position: relative;
+}
 .notebook-cover {
-	width: var(--page-width);
-	height: auto;
+	width: auto;
+	height: var(--page-height);
 	position: relative;
 	display: none;
 }
+.notebook-cover img {
+	height: 100%;
+	width: auto;
+}
+.endpaper-left,
+.endpaper-right {
+	position: absolute;
+	top: 0;
+}
+.endpaper-right {
+	right: 0;
+}
 .page-link {
 	position: absolute;
+	top: 0;
 	width: 50%;
 	height: 100%;
 	background-color: transparent;
