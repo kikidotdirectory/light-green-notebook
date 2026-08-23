@@ -39,7 +39,7 @@ function replaceSpreadImage(pageNum: number) {
 function incrementPage(delta: number) {
 	const dest = currentPageNum + delta;
 	// prevent navigation from going outside bounds of notebook
-	if (dest < 0 || dest > totalSpreads) return;
+	if (dest < 0 || dest >= totalSpreads) return;
 
 	// change the page
 	currentPageNum = dest;
