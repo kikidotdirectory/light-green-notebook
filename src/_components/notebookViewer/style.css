@@ -15,27 +15,7 @@
 }
 .notebook-container img {
 	width: 100%;
-}
-.spread-image {
 	position: relative;
-}
-.notebook-cover {
-	width: auto;
-	height: var(--page-height);
-	position: relative;
-	display: none;
-}
-.notebook-cover img {
-	height: 100%;
-	width: auto;
-}
-.endpaper-left,
-.endpaper-right {
-	position: absolute;
-	top: 0;
-}
-.endpaper-right {
-	right: 0;
 }
 .page-link {
 	position: absolute;
@@ -54,13 +34,13 @@
 	}
 }
 .notebook-viewer[data-spread="0"] {
-	& .notebook-cover {
-		display: block;
-		& .page-link.next {
-			width: 100%;
-		}
+	& .page-link.next {
+		width: 100%;
 	}
-	& .notebook-container {
-		display: none;
+	& .page-link.prev {
+		width: 0%;
+	}
+	& .spread-image {
+		max-height: var(--page-height);
 	}
 }

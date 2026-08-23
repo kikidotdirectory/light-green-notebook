@@ -1,14 +1,6 @@
 {{ set title = notebookData.title }}
 
 {{ set head }}
-	<script>
-	const notebookID = "{{ notebookData.uid }}";
-	const assetsDir = "/assets/{{ notebookData.uid }}/";
-	const fileExt = "{{ notebookData.fileExt }}";
-	const fileName = (page) => String(page).padStart(4, "0");
-	let totalSpreads = {{ notebookData.totalSpreads }};
-	</script>
-	<script src="/js/page-navigation.js" type="module"></script>
 {{ /set }}
 
 {{ layout "layouts/base.vto" }}

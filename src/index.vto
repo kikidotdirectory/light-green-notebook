@@ -3,13 +3,5 @@ title: ◻
 ---
 
 {{ layout "layouts/base.vto" }}
-	<ul>
-		{{ for post of search.pages("notebook") }}
-			<li>
-				<a href="{{ post.url}}">
-					{{ post.notebookData.title }}
-				</a>
-			</li>
-		{{ /for }}
-	</ul>
+	{{ comp notebookViewer }} {{ /comp }}
 {{ /layout }}
