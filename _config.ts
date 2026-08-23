@@ -2,7 +2,7 @@ import lume from "lume/mod.ts";
 import esbuild from "lume/plugins/esbuild.ts";
 import nav from "lume/plugins/nav.ts";
 
-import { buildCss } from "./src/scripts/buildCss.ts";
+import { buildCss } from "./src/_scripts/buildCss.ts";
 
 const site = lume({
 	src: "./src",
