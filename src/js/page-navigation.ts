@@ -6,7 +6,7 @@ let currentPageNum: number;
 let currentSide: Side = "left";
 let pageMode = false;
 
-const fileName = (page: number) => String(page + 1).padStart(4, "0");
+const fileName = (page: number) => String(page).padStart(4, "0");
 const pageSrc = (pageNum: number) => "/assets/spreads/" + fileName(pageNum) + "." + fileExt;
 
 function getState(): number {
