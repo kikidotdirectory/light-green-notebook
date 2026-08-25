@@ -59,12 +59,14 @@ function normalizePages() {
 function buildSpreadAnnotations(pageAnnotations: Record<number, PageAnnotations>) {
 	const spreadAnnotations: Record<number, PageAnnotations> = {};
 	const pagesStart = numbered_start.spread;
+	// Page numbering may begin on either side of the starting spread (e.g. the
+	// left page of that spread is unnumbered front matter when side is "right").
+	let nextPage = 1;
 
 	for (let i = 0; i < spreads.length; i++) {
 		if (i < pagesStart) continue;
-		const spreadOffset = i - pagesStart;
-		const pageLeft = spreadOffset * 2 + 1;
-		const pageRight = pageLeft + 1;
+		const pageLeft = i === pagesStart && numbered_start.side === "right" ? null : nextPage++;
+		const pageRight = nextPage++;
 
 		const merged: PageAnnotations = {};
 		for (const page of [pageLeft, pageRight]) {
