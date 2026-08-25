@@ -8,15 +8,18 @@
 	padding: var(--size-4-3) var(--size-4-3);
 	padding-bottom: var(--size-4-2);
 }
+
 .notebook-container {
 	height: auto;
 	max-width: var(--spread-width);
 	position: relative;
 }
+
 .notebook-container img {
 	width: 100%;
 	position: relative;
 }
+
 .page-link {
 	position: absolute;
 	top: 0;
@@ -33,6 +36,7 @@
 		cursor: e-resize;
 	}
 }
+
 .notebook-viewer[data-spread="0"] {
 	& .page-link.next {
 		width: 100%;
@@ -42,5 +46,31 @@
 	}
 	& .spread-image {
 		max-height: var(--page-height);
+	}
+}
+
+.notebook-viewer[data-mode="page"] {
+	& .notebook-container {
+		max-width: var(--page-width);
+	}
+	& .spread-image {
+		width: 200%;
+		max-width: 200%;
+	}
+	&[data-side="right"] .spread-image {
+		transform: translateX(-50%);
+		transition: transform 0.2s ease-out;
+	}
+	&[data-side="left"] .spread-image {
+		transform: translateX(0);
+		transition: transform 0.2s ease-out;
+	}
+
+	/* the cover is a single page image already, not a two-page spread */
+	&[data-spread="0"] .spread-image {
+		width: 100%;
+		max-width: 100%;
+		transform: translateX(0);
+		transition: transform 0.2s ease-out;
 	}
 }
