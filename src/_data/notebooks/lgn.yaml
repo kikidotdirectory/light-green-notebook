@@ -4,7 +4,7 @@ dimensions: # in inches
   width: 5.75
   height: 8.25
 
-totalSpreads: 110
+totalSpreads: 109
 fileExt: png
 
 front_matter:
