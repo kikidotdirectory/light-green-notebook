@@ -31,9 +31,17 @@
 
 	/* Color mappings ------------------------ */
 	/* Backgrounds */
-	--background-primary: var(--color-base-100);
+	--background-primary: #fff;
 	--background-primary-alt: var(--color-base-200);
 	--background-modifier-border: var(--color-base-300);
 	--background-modifier-border-hover: var(--color-base-350);
 	--background-modifier-border-focus: var(--color-base-400);
+
+	/* Typography primitives ----------------- */
+	/* Font sizes */
+	--font-xxs: 0.8rem;
+	--font-xs: 0.875rem;
+	--font-s: 0.933rem;
+	--font-base-serif: 0.9rem;
+	--font-base-sans: 0.785rem;
 }

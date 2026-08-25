@@ -1,5 +1,5 @@
 body {
 	font-size: 0.95rem;
-	background-color: var(--color-base-100);
+	background-color: var(--background-primary);
 	color: var(--color-base-900);
 }
