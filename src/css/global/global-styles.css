@@ -1,3 +1,5 @@
 body {
 	font-size: 0.95rem;
+	background-color: var(--background-primary);
+	color: var(--color-base-900);
 }

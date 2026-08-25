@@ -1,6 +1,8 @@
 import lume from "lume/mod.ts";
+import esbuild from "lume/plugins/esbuild.ts";
+import nav from "lume/plugins/nav.ts";
 
-import { buildCss } from "./src/scripts/buildCss.ts";
+import { buildCss } from "./src/_scripts/buildCss.ts";
 
 const site = lume({
 	src: "./src",
@@ -12,6 +14,10 @@ const site = lume({
 	},
 });
 
+site
+	.use(esbuild())
+	.use(nav());
+
 site.addEventListener("beforeBuild", async () => {
 	await buildCss("src/css/global.css", "src/style.css");
 });
@@ -22,17 +28,12 @@ site.addEventListener("beforeUpdate", async (event) => {
 	}
 });
 
-site.filter("padStart", (num) => {
-	const size = 4;
-	return String(num).padStart(size, "0");
-});
-
 site.filter("inlinecss", (css) => {
-	return `<style>\n${css}</style>`
-})
+	return `<style>\n${css}</style>`;
+});
 
 site.add([".png"]);
 site.add("style.css");
-site.add("script.js");
+site.add("js");
 
 export default site;

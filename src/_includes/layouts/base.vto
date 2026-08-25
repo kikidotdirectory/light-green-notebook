@@ -3,15 +3,12 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Document</title>
-		{{ if css }}
-			{{ css |> inlinecss }}
-		{{ /if -}}
-		{{ if head }}
-			{{ head }}
-		{{ /if }}
+		<title>{{ title }}</title>
+		<script>
+		let totalSpreads = {{ notebooks.lgn.totalSpreads }};
+		</script>
+		<script src="/js/page-navigation.js" type="module"></script>
 		<link rel="stylesheet" href="/style.css">
-		<script src="/script.js" type="module" defer></script>
 	</head>
 	<body>
 		{{ content }}

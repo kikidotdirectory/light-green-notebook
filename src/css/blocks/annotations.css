@@ -1,0 +1,27 @@
+.annotations {
+	position: absolute;
+	top: 100%;
+	max-width: var(--spread-width);
+	margin-top: var(--size-4-2);
+}
+
+.annotation-group:not([hidden]) {
+	display: block;
+}
+
+.annotation {
+	display: flex;
+	align-items: baseline;
+	gap: var(--size-4-2);
+	font-size: var(--font-base-serif);
+}
+
+.annotation-title {
+	color: var(--color-base-900);
+}
+
+.annotation-pages {
+	color: var(--color-base-600);
+	font-size: var(--font-base-sans);
+	font-family: Arial, Helvetica, sans-serif;
+}
