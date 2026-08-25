@@ -79,7 +79,7 @@ function flipPage(delta: number) {
 
 function preloadPage(pageNum: number) {
 	if (pageNum < 0) return;
-	if (pageNum >= totalSpreads) return;
+	if (pageNum > totalSpreads) return;
 	const img = new Image();
 	img.src = pageSrc(pageNum);
 }

@@ -4,17 +4,9 @@ dimensions: # in inches
   width: 5.75
   height: 8.25
 
-totalSpreads: 109
 fileExt: png
 
-front_matter:
-  - { id: cover,   kind: cover,    spread: 1, side: right }
-  - { id: ifc,     kind: endpaper, spread: 2, side: left  }
-  - { id: contact, kind: contact,  spread: 2, side: right }
-  - { id: toc_l,   kind: toc,      spread: 3, side: left  }
-  - { id: toc_r,   kind: toc,      spread: 3, side: right }
-  - { id: leaf,    kind: leaf,     spread: 4, side: left  }
-numbered_start: { spread: 4, side: right }   # where the numbered pages begin
+numbered_start: { spread: 2, side: right }   # where the numbered pages begin
 
 sections:
   qnary:
