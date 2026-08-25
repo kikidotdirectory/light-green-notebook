@@ -13,7 +13,7 @@ title: ◻
 				<img
 					class="spread-image"
 					{{# todo, make this not hardcoded #}}
-					src="/assets/spreads/0001.png"
+					src="/assets/spreads/0000.png"
 					data-spread="0"
 					alt=""
 				>
@@ -30,6 +30,23 @@ title: ◻
 				>
 				</button>
 			</div>
+			<figcaption class="annotations">
+				{{ for [spread, group] of Object.entries(notebooks.lgn.annotations) }}
+					<div
+						class="annotation-group"
+						data-spread="{{ spread }}"
+						{{ if spread !== "0" }}
+							hidden{{ /if }}
+					>
+						{{ for [key, annotation] of Object.entries(group) }}
+							<span class="annotation" data-key="{{ key }}">
+								<span class="annotation-pages">{{ annotation.label }}</span>
+								<span class="annotation-title">{{ annotation.title }}</span>
+							</span>
+						{{ /for }}
+					</div>
+				{{ /for }}
+			</figcaption>
 		</figure>
 	</main>
 {{ /layout }}

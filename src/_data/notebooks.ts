@@ -24,7 +24,11 @@ interface Notebook {
 		side: "left" | "right";
 	};
 }
-type PageAnnotations = Record<string, string>;
+interface Annotation {
+	title: string;
+	label: string;
+}
+type PageAnnotations = Record<string, Annotation>;
 
 const { dimensions, sections, numbered_start } = parse(
 	await Deno.readTextFile("src/_data/_notebooks/lgn.yaml"),
@@ -38,8 +42,9 @@ function normalizePages() {
 	const pageAnnotations: Record<number, PageAnnotations> = {};
 
 	for (const [key, value] of Object.entries(sections)) {
+		const title = value.title ?? key;
 		const assign = (page: number, key: string, label: string) => {
-			(pageAnnotations[page] ??= {})[key] = label;
+			(pageAnnotations[page] ??= {})[key] = { title, label };
 		};
 		// Iterate over the 'pages' property of each section of the notebook
 		// If the page is an array (representing an array), expand it and
@@ -70,10 +75,11 @@ function buildSpreadAnnotations(pageAnnotations: Record<number, PageAnnotations>
 
 		const merged: PageAnnotations = {};
 		for (const page of [pageLeft, pageRight]) {
+			if (page === null) continue;
 			const annotations = pageAnnotations[page];
 			if (!annotations) continue;
-			for (const [key, label] of Object.entries(annotations)) {
-				merged[key] = label;
+			for (const [key, annotation] of Object.entries(annotations)) {
+				merged[key] = annotation;
 			}
 		}
 

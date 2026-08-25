@@ -31,12 +31,20 @@ function replaceSpreadImage(pageNum: number) {
 	spreadImage = newImage;
 }
 
+function revealAnnotations(pageNum: number) {
+	const target = pageNum.toString();
+	for (const group of annotationGroups) {
+		group.hidden = group.dataset.spread !== target;
+	}
+}
+
 function goToSpread(pageNum: number, side: Side) {
 	currentPageNum = pageNum;
 	currentSide = side;
 	notebookViewer.dataset.spread = currentPageNum.toString();
 	applySideAttr();
 	replaceSpreadImage(currentPageNum);
+	revealAnnotations(currentPageNum);
 	setState(currentPageNum);
 }
 
@@ -135,6 +143,7 @@ const mainEl = document.querySelector("main") as HTMLElement;
 const prev = document.querySelector(".page-link.prev") as HTMLButtonElement;
 const next = document.querySelector(".page-link.next") as HTMLButtonElement;
 let spreadImage = document.querySelector(".spread-image") as HTMLImageElement;
+const annotationGroups = document.querySelectorAll<HTMLElement>(".annotation-group");
 
 prev?.addEventListener("click", () => flipPage(-1));
 next?.addEventListener("click", () => flipPage(1));
@@ -144,6 +153,7 @@ if (currentPageNum) {
 	notebookViewer.dataset.spread = currentPageNum.toString();
 	replaceSpreadImage(currentPageNum);
 }
+revealAnnotations(currentPageNum);
 
 updateMode();
 window.addEventListener("resize", updateMode);
