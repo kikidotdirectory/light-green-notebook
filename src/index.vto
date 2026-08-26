@@ -3,36 +3,38 @@ title: ◻
 ---
 
 {{ layout "layouts/base.vto" }}
-	{{
-		set layoutColRem = Math.round(notebooks.lgn.dimensions.width * config["rem-per-inch"] * 2 * 100)
-		/ 100
-	}}
-	{{
-		set layoutRowRem = Math.round(notebooks.lgn.dimensions.height * config["rem-per-inch"] * 100)
-		/ 100
-	}}
-	<style>
-	:root {
-		--layout-col: {{ layoutColRem }}rem;
-		--layout-row: {{ layoutRowRem }}rem;
-		--in-rem-ratio: {{ config["rem-per-inch"] }}rem;
-		--notebook-width: {{ notebooks.lgn.dimensions.width }};
-		--notebook-height: {{ notebooks.lgn.dimensions.height }};
-	}
-	@media (max-width: {{ layoutColRem }}rem), (max-height: {{ layoutRowRem }}rem) {
-		main {
-			grid-template-columns: 1fr;
-			grid-template-rows: 1fr;
+	{{ set head }}
+		{{
+			set layoutColRem = Math.round(notebooks.lgn.dimensions.width * config["rem-per-inch"] * 2 * 100)
+			/ 100
+		}}
+		{{
+			set layoutRowRem = Math.round(notebooks.lgn.dimensions.height * config["rem-per-inch"] * 100)
+			/ 100
+		}}
+		<style>
+		:root {
+			--layout-col: {{ layoutColRem }}rem;
+			--layout-row: {{ layoutRowRem }}rem;
+			--in-rem-ratio: {{ config["rem-per-inch"] }}rem;
+			--notebook-width: {{ notebooks.lgn.dimensions.width }};
+			--notebook-height: {{ notebooks.lgn.dimensions.height }};
 		}
-	}
-	</style>
+		@media (max-width: {{ layoutColRem }}rem), (max-height: {{ layoutRowRem }}rem) {
+			body {
+				grid-template-columns: 1fr;
+				grid-template-rows: 1fr;
+			}
+		}
+		</style>
+	{{ /set }}
+
 	<header>
 		{{ comp.tocList() }}
 	</header>
-	<main style="">
+	<main>
 		<figure
 			class="notebook-viewer"
-			style=""
 			data-spread="0"
 		>
 			<div class="notebook-container">
@@ -56,7 +58,6 @@ title: ◻
 				>
 				</button>
 			</div>
-			<figcaption class="annotations"></figcaption>
 		</figure>
 	</main>
 	<footer>
