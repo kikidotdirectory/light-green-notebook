@@ -1,0 +1,7 @@
+<nav>
+	<ol class="toc">
+		{{ for spread of Array.from({ length: notebooks.lgn.totalSpreads }, (_, i) => i) }}
+			{{ comp.tocItem({ spread, group: notebooks.lgn.annotations[spread] }) }}
+		{{ /for }}
+	</ol>
+</nav>

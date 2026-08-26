@@ -1,0 +1,17 @@
+<li>
+	<details>
+		<summary>{{ String(spread).padStart(3, "0") }}</summary>
+		<div class="content">
+			{{ if group }}
+				<ul class="annotations">
+					{{ for [key, annotation] of Object.entries(group) }}
+						<li class="annotation" data-key="{{ key }}">
+							<span class="annotation-pages">{{ annotation.label }}</span>
+							<span class="annotation-title">{{ annotation.title }}</span>
+						</li>
+					{{ /for }}
+				</ul>
+			{{ /if }}
+		</div>
+	</details>
+</li>

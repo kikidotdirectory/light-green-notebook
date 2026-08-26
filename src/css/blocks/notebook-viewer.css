@@ -38,6 +38,8 @@
 }
 
 .notebook-viewer[data-spread="0"] {
+	display: flex;
+	justify-content: center;
 	& .page-link.next {
 		width: 100%;
 	}
@@ -46,5 +48,6 @@
 	}
 	& .spread-image {
 		max-height: var(--page-height);
+		width: auto;
 	}
 }

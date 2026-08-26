@@ -1,0 +1,6 @@
+.toc {
+	list-style: none;
+}
+.toc summary {
+	display: block; /* hide default arrow */
+}

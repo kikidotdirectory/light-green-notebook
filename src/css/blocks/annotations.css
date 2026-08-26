@@ -1,12 +1,5 @@
 .annotations {
-	position: absolute;
-	top: 100%;
 	max-width: var(--spread-width);
-	margin-top: var(--size-4-2);
-}
-
-.annotation-group:not([hidden]) {
-	display: block;
 }
 
 .annotation {
