@@ -4,6 +4,7 @@ let currentPageNum: number;
 
 const fileName = (page: number) => String(page).padStart(3, "0");
 const pageSrc = (pageNum: number) => "/assets/spreads/" + fileName(pageNum) + "." + fileExt;
+const hashFor = (page: number) => "#" + fileName(page);
 
 function getState(): number {
 	try {
@@ -16,6 +17,25 @@ function getState(): number {
 
 function setState(pageNum: number) {
 	localStorage.setItem(notebookID, pageNum.toString());
+}
+
+// callers can fall back to the last-viewed page from localStorage.
+function parseHash(): number | null {
+	const raw = location.hash.slice(1);
+	if (!/^\d+$/.test(raw)) return null;
+	const pageNum = Number(raw);
+	if (pageNum < 0 || pageNum >= totalSpreads) return null;
+	return pageNum;
+}
+
+// Keeps the URL in sync with the current spread without pushing history
+// entries or firing "hashchange" (which is reserved for navigation the user
+// initiates directly, e.g. editing the URL or following a link).
+function updateHash(pageNum: number) {
+	const target = hashFor(pageNum);
+	if (location.hash !== target) {
+		history.replaceState(null, "", target);
+	}
 }
 
 function replaceSpreadImage(pageNum: number) {
@@ -40,6 +60,7 @@ function goToSpread(pageNum: number) {
 	replaceSpreadImage(currentPageNum);
 	revealAnnotations(currentPageNum);
 	setState(currentPageNum);
+	updateHash(currentPageNum);
 }
 
 function flipPage(delta: number) {
@@ -70,13 +91,19 @@ const annotationGroups = document.querySelectorAll<HTMLElement>(".annotation-gro
 prev?.addEventListener("click", () => flipPage(-1));
 next?.addEventListener("click", () => flipPage(1));
 
-currentPageNum = getState();
+currentPageNum = parseHash() ?? getState();
 if (currentPageNum) {
 	notebookViewer.dataset.spread = currentPageNum.toString();
 	replaceSpreadImage(currentPageNum);
 }
 revealAnnotations(currentPageNum);
+setState(currentPageNum);
+updateHash(currentPageNum);
 
+window.addEventListener("hashchange", () => {
+	const pageNum = parseHash();
+	if (pageNum !== null) goToSpread(pageNum);
+});
 
 preloadPage(currentPageNum - 1);
 preloadPage(currentPageNum + 1);
