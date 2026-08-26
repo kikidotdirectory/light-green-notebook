@@ -48,29 +48,3 @@
 		max-height: var(--page-height);
 	}
 }
-
-.notebook-viewer[data-mode="page"] {
-	& .notebook-container {
-		max-width: var(--page-width);
-	}
-	& .spread-image {
-		width: 200%;
-		max-width: 200%;
-	}
-	&[data-side="right"] .spread-image {
-		transform: translateX(-50%);
-		transition: transform 0.2s ease-out;
-	}
-	&[data-side="left"] .spread-image {
-		transform: translateX(0);
-		transition: transform 0.2s ease-out;
-	}
-
-	/* the cover is a single page image already, not a two-page spread */
-	&[data-spread="0"] .spread-image {
-		width: 100%;
-		max-width: 100%;
-		transform: translateX(0);
-		transition: transform 0.2s ease-out;
-	}
-}
