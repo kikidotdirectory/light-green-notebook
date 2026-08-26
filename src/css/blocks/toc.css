@@ -1,4 +1,9 @@
+header {
+	grid-area: h;
+}
 .toc {
+}
+.toc ol {
 	list-style: none;
 }
 .toc summary {

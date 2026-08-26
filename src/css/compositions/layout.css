@@ -1,13 +1,15 @@
 body {
 	height: 100vh;
-	padding-bottom: 5vh;
+	padding: 1rem;
 
 	display: grid;
 	grid-template-columns: 1fr var(--layout-col) 1fr;
 	grid-template-rows: 1fr var(--layout-row) 1fr;
+	grid-template-areas:
+		"h . ."
+		"h book ."
+		"h . .";
 }
-
-main > * {
-	grid-column: 2;
-	grid-row: 2;
+main {
+	grid-area: book;
 }
