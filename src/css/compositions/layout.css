@@ -1,6 +1,6 @@
 body {
 	height: 100vh;
-	padding: 1rem;
+	padding: var(--size-4-3);
 
 	display: grid;
 	grid-template-columns: 1fr var(--layout-col) 1fr;
