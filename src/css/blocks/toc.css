@@ -1,12 +1,20 @@
 .toc {
 	grid-area: toc;
-	overflow: scroll;
+	overflow-y: auto;
+	mask-image: linear-gradient(
+		to bottom,
+		transparent,
+		black 18px,
+		black calc(100% - 18px),
+		transparent
+	);
 }
 .toc ol {
 	list-style: none;
 }
 .toc summary {
-	display: block; /* hide default arrow */
+	display: inline-block; /* hide default arrow */
+	user-select: none;
 }
 .toc:has(details[open]) li:not(:has(details[open])) {
 	display: none;
