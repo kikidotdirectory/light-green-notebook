@@ -67,6 +67,13 @@ function createNotebook() {
 		preloadPage(dest + delta);
 	}
 
+	function jumpToSpread(pageNum: number, push?: boolean) {
+		if (pageNum < 0 || pageNum >= totalSpreads) return;
+		goToSpread(pageNum, push)
+		preloadPage(currentPageNum + 1)
+		preloadPage(currentPageNum - 1)
+	}
+
 	function preloadPage(pageNum: number) {
 		if (pageNum < 0) return;
 		if (pageNum > totalSpreads) return;
@@ -98,7 +105,7 @@ function createNotebook() {
 
 	init();
 
-	return { flipPage, goToSpread };
+	return { flipPage, jumpToSpread };
 }
 
 export const notebook = createNotebook();
