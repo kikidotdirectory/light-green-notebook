@@ -1,6 +1,5 @@
 .toc {
 	grid-area: toc;
-	height: 100%;
 	overflow: scroll;
 }
 .toc ol {
