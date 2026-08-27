@@ -34,6 +34,6 @@ site.filter("inlinecss", (css) => {
 
 site.add([".png"]);
 site.add("style.css");
-site.add("js");
+site.add("script.ts");
 
 export default site;
