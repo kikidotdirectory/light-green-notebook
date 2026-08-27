@@ -8,3 +8,6 @@
 .toc summary {
 	display: block; /* hide default arrow */
 }
+.toc:has(details[open]) li:not(:has(details[open])) {
+	display: none;
+}
