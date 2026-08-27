@@ -2,7 +2,9 @@ header {
 	grid-area: header;
 
 	display: grid;
-	grid-template-rows: subgrid;
+	/* Subgrid is hardcoded here because Safari has an inexplicable bug that will
+	 * cause toc to take up the full height of header. Thanks, Tim. */
+	grid-template-rows: 1fr var(--layout-row) 1fr;
 	grid-template-columns: 1fr;
 	grid-template-areas:
 		"."
