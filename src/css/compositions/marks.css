@@ -1,0 +1,118 @@
+.marks {
+	--offset: calc(100% - 0.5rem);
+	grid-row: 1 / -1;
+	grid-column: 1 / -1;
+
+	display: grid;
+	grid-template-rows: subgrid;
+	grid-template-columns: subgrid;
+
+	grid-template-areas:
+		". top ."
+		"left . right"
+		". bottom .";
+	pointer-events: none;
+}
+
+.marks > * {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.marks .left {
+	grid-area: left;
+}
+
+.marks .bottom {
+	grid-area: bottom;
+}
+
+.marks .top {
+	grid-area: top;
+}
+
+.marks .right {
+	grid-area: right;
+}
+
+.marks .outer.top {
+	grid-row: 1;
+	grid-column: 1 / -1;
+}
+
+.marks .outer.bottom {
+	grid-row: 3;
+	grid-column: 1 / -1;
+}
+
+.marks .outer.right {
+	grid-column: 3;
+	grid-row: 1 / -1;
+}
+
+.marks .outer.left {
+	grid-column: 1;
+	grid-row: 1 / -1;
+}
+
+.marks *:before, .marks *:after {
+	content: "";
+	position: absolute;
+}
+
+.marks {
+	opacity: 0.2;
+}
+
+.marks .top:before,
+.marks .inner.top:after,
+.marks .bottom:before,
+.marks .inner.bottom:after {
+	border-left: 1px solid;
+	border-right: 1px solid;
+	height: 1rem;
+	width: 100%;
+}
+
+.marks .right:before,
+.marks .inner.right:after,
+.marks .left:before,
+.marks .inner.left:after {
+	border-top: 1px solid;
+	border-bottom: 1px solid;
+	width: 1rem;
+	height: 100%;
+}
+
+.marks .top:before {
+	bottom: var(--offset);
+}
+
+.marks .inner.top:after {
+	top: var(--offset);
+}
+
+.marks .inner.bottom:after {
+	bottom: var(--offset);
+}
+
+.marks .bottom:before {
+	top: var(--offset);
+}
+
+.marks .inner.right:after {
+	right: var(--offset);
+}
+
+.marks .right:before {
+	left: var(--offset);
+}
+
+.marks .inner.left:after {
+	left: var(--offset);
+}
+
+.marks .left:before {
+	right: var(--offset);
+}
