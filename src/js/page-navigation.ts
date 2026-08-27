@@ -39,12 +39,8 @@ function updateHash(pageNum: number) {
 }
 
 function replaceSpreadImage(pageNum: number) {
-	const newImage = document.createElement("img");
-	newImage.className = spreadImage.className;
-	newImage.alt = spreadImage.alt;
-	newImage.src = pageSrc(pageNum);
-	spreadImage.replaceWith(newImage);
-	spreadImage = newImage;
+	if (pageNum === 0) return;
+	spreadImage.src = pageSrc(pageNum);
 }
 
 function revealAnnotations(pageNum: number) {
@@ -85,7 +81,7 @@ const notebookID = "lgn";
 const notebookViewer = document.querySelector(".notebook-viewer") as HTMLElement;
 const prev = document.querySelector(".page-link.prev") as HTMLButtonElement;
 const next = document.querySelector(".page-link.next") as HTMLButtonElement;
-let spreadImage = document.querySelector(".spread-image") as HTMLImageElement;
+const spreadImage = document.querySelector(".spread-image") as HTMLImageElement;
 const annotationGroups = document.querySelectorAll<HTMLElement>(".annotation-group");
 
 prev?.addEventListener("click", () => flipPage(-1));
