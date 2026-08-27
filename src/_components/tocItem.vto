@@ -1,6 +1,6 @@
-<li>
+<li data-spread="{{ spread }}">
 	<details>
-		<summary>{{ String(spread).padStart(3, "0") }}</summary>
+		<summary>{{ spread |> padNum(3) }}</summary>
 		<div class="content">
 			{{ if group }}
 				<ul class="annotations">

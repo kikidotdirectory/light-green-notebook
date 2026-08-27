@@ -32,6 +32,10 @@ site.filter("inlinecss", (css) => {
 	return `<style>\n${css}</style>`;
 });
 
+site.filter("padNum", (number, count) => {
+	return String(number).padStart(count, "0");
+});
+
 site.add([".png"]);
 site.add("style.css");
 site.add("script.ts");
