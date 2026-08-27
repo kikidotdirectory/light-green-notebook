@@ -12,12 +12,17 @@
 	user-select: none;
 	height: auto;
 	max-width: var(--spread-width);
+	width: 100%;
 	position: relative;
 }
 
-.notebook-container img {
+.spread-image {
+	object-fit: cover;
 	width: 100%;
-	position: relative;
+}
+
+.cover-image {
+	display: none;
 }
 
 .page-link {
@@ -39,7 +44,7 @@
 
 .notebook-viewer[data-spread="0"] {
 	display: flex;
-	justify-content: center;
+	height: 100%;
 	& .page-link.next {
 		width: 100%;
 	}
@@ -47,7 +52,12 @@
 		width: 0%;
 	}
 	& .spread-image {
-		max-height: var(--page-height);
+		display: none;
+	}
+	& .cover-image {
+		display: block;
+		height: 100%;
 		width: auto;
+		max-width: none;
 	}
 }
