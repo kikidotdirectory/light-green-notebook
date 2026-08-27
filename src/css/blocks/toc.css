@@ -1,6 +1,5 @@
 .toc {
 	grid-area: toc;
-	height: 100%;
 	overflow: scroll;
 }
 .toc ol {
@@ -8,4 +7,7 @@
 }
 .toc summary {
 	display: block; /* hide default arrow */
+}
+.toc:has(details[open]) li:not(:has(details[open])) {
+	display: none;
 }
