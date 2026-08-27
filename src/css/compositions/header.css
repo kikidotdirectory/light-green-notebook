@@ -1,0 +1,11 @@
+header {
+	grid-area: header;
+
+	display: grid;
+	grid-template-rows: subgrid;
+	grid-template-columns: 1fr;
+	grid-template-areas:
+		"."
+		"toc"
+		".";
+}
