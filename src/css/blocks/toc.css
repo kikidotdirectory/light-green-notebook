@@ -9,13 +9,16 @@
 		transparent
 	);
 }
+
 .toc ol {
 	list-style: none;
 }
+
 .toc summary {
 	display: inline-block; /* hide default arrow */
 	user-select: none;
 }
-.toc:has(details[open]) li:not(:has(details[open])) {
+
+.toc:has(details[open]) > ol > li:not(:has(details[open])) {
 	display: none;
 }

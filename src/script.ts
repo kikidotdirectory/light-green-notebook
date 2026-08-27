@@ -1,5 +1,5 @@
 import "./js/page-navigation.ts";
-import { Accordion } from "./js/nav.ts";
+import { TocList } from "./js/toc.ts";
 
-const navDetails = document.querySelectorAll("nav details") as NodeListOf<HTMLDetailsElement>;
-navDetails.forEach((d) => new Accordion(d));
+const tocList = document.querySelector(".toc ol") as HTMLOListElement;
+new TocList(tocList);
