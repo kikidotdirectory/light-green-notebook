@@ -4,10 +4,11 @@
 	mask-image: linear-gradient(
 		to bottom,
 		transparent,
-		black 18px,
-		black calc(100% - 18px),
+		black 14px,
+		black calc(100% - 14px),
 		transparent
 	);
+	padding-top: 12px;
 }
 
 .toc ol {
