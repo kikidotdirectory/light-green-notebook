@@ -39,9 +39,6 @@
 
 	/* Typography primitives ----------------- */
 	/* Font sizes */
-	--font-xxs: 0.8rem;
-	--font-xs: 0.875rem;
-	--font-s: 0.933rem;
-	--font-base-serif: 0.9rem;
-	--font-base-sans: 0.785rem;
+	--font-base-serif: 0.95rem;
+	--font-base-sans: 0.9rem;
 }
