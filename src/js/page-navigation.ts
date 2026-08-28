@@ -1,5 +1,7 @@
 declare const totalSpreads: number;
 
+export type FlipPageEvent = CustomEvent<number>;
+
 function createNotebook() {
 	const fileExt = "png";
 	const notebookID = "lgn";
@@ -63,15 +65,16 @@ function createNotebook() {
 	function flipPage(delta: number) {
 		const dest = currentPageNum + delta;
 		if (dest < 0 || dest >= totalSpreads) return;
+		dispatchEvent(new CustomEvent<number>("notebook:flipPage", { bubbles: true, detail: dest }));
 		goToSpread(dest);
 		preloadPage(dest + delta);
 	}
 
 	function jumpToSpread(pageNum: number, push?: boolean) {
 		if (pageNum < 0 || pageNum >= totalSpreads) return;
-		goToSpread(pageNum, push)
-		preloadPage(currentPageNum + 1)
-		preloadPage(currentPageNum - 1)
+		goToSpread(pageNum, push);
+		preloadPage(currentPageNum + 1);
+		preloadPage(currentPageNum - 1);
 	}
 
 	function preloadPage(pageNum: number) {
