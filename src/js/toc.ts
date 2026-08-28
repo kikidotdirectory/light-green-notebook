@@ -27,11 +27,10 @@ export class TocList {
 			if (!(li instanceof HTMLLIElement) || !li.dataset.spread) return;
 			const spread = Number(li.dataset.spread);
 			if (spread === this.currentSpread) return;
-			this.changeCurrent(spread);
 			notebook.jumpToSpread(spread, true);
 		});
 
-		window.addEventListener("notebook:flipPage", (e) => {
+		window.addEventListener("notebook:pagechange", (e) => {
 			const dest = (e as FlipPageEvent).detail;
 			this.changeCurrent(dest);
 		});

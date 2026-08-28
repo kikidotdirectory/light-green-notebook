@@ -65,14 +65,15 @@ function createNotebook() {
 	function flipPage(delta: number) {
 		const dest = currentPageNum + delta;
 		if (dest < 0 || dest >= totalSpreads) return;
-		dispatchEvent(new CustomEvent<number>("notebook:flipPage", { bubbles: true, detail: dest }));
+		dispatchEvent(new CustomEvent<number>("notebook:pagechange", { bubbles: true, detail: dest }));
 		goToSpread(dest);
 		preloadPage(dest + delta);
 	}
 
-	function jumpToSpread(pageNum: number, push?: boolean) {
-		if (pageNum < 0 || pageNum >= totalSpreads) return;
-		goToSpread(pageNum, push);
+	function jumpToSpread(dest: number, push?: boolean) {
+		if (dest < 0 || dest >= totalSpreads) return;
+		dispatchEvent(new CustomEvent<number>("notebook:pagechange", { bubbles: true, detail: dest }));
+		goToSpread(dest, push);
 		preloadPage(currentPageNum + 1);
 		preloadPage(currentPageNum - 1);
 	}
@@ -91,24 +92,16 @@ function createNotebook() {
 
 		currentPageNum = parseHash() ?? getState();
 		if (currentPageNum) {
-			notebookViewer.dataset.spread = currentPageNum.toString();
-			replaceSpreadImage(currentPageNum);
+			jumpToSpread(currentPageNum);
 		}
-		setState(currentPageNum);
-		updateHash(currentPageNum);
 
 		window.addEventListener("hashchange", () => {
 			const pageNum = parseHash();
 			if (pageNum !== null) goToSpread(pageNum);
 		});
-
-		preloadPage(currentPageNum - 1);
-		preloadPage(currentPageNum + 1);
 	}
 
-	init();
-
-	return { flipPage, jumpToSpread };
+	return { flipPage, jumpToSpread, init };
 }
 
 export const notebook = createNotebook();
