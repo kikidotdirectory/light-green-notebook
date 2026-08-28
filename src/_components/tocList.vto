@@ -9,4 +9,24 @@
 			{{ comp.tocItem({ spread, group: notebooks.lgn.annotations[spread] }) }}
 		{{ /for }}
 	</ol>
+	<script>
+	(function() {
+		var raw = location.hash.slice(1);
+		var spread = null;
+		if (/^\d+$/.test(raw)) {
+			var hashSpread = Number(raw);
+			if (hashSpread >= 0 && hashSpread < totalSpreads) spread = hashSpread;
+		}
+		if (spread === null) {
+			var stored = Number(localStorage.getItem("lgn"));
+			spread = stored < totalSpreads ? stored : 0;
+		}
+		var li = document.querySelector(".toc li[data-spread=\"" + spread + "\"]");
+		var details = li && li.querySelector("details");
+		if (details) {
+			details.open = true;
+			details.classList.add("current");
+		}
+	})();
+	</script>
 </nav>
