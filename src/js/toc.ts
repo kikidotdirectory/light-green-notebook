@@ -1,4 +1,4 @@
-import { type FlipPageEvent, notebook } from "./page-navigation.ts";
+import type { CurrPage } from "./page-store.ts";
 
 export class TocList {
 	el: HTMLOListElement;
@@ -10,34 +10,34 @@ export class TocList {
 	// - implement viewing toc mode, .current toc item
 	// - implement eventListener for mouse leaving toc
 
-	constructor(el: HTMLOListElement) {
+	constructor(el: HTMLOListElement, currPage: CurrPage) {
 		this.el = el;
 
 		for (const child of this.el.children) {
-			if (!(child instanceof HTMLLIElement)) continue;
-			const spread = child.dataset.spread;
+			if (!(child instanceof HTMLLIElement) || !child.dataset.spread) continue;
+			const spread = Number(child.dataset.spread);
 			const details = child.querySelector("details") as HTMLDetailsElement;
-			this.items.set(Number(spread), details);
+			const summary = details.querySelector("summary");
+			this.items.set(spread, details);
+			summary?.addEventListener("click", this.createSummaryClickListener(spread, details, currPage));
 		}
 
-		this.el.addEventListener("click", (e) => {
-			const summary = (e.target as HTMLElement).closest("summary");
-			if (!summary) return;
-			const li = summary.closest("li");
-			if (!(li instanceof HTMLLIElement) || !li.dataset.spread) return;
-			const spread = Number(li.dataset.spread);
-			if (spread === this.currentSpread) return;
-			this.changeCurrent(spread);
-			notebook.jumpToSpread(spread, true);
-		});
-
-		window.addEventListener("notebook:flipPage", (e) => {
-			const dest = (e as FlipPageEvent).detail;
-			this.changeCurrent(dest);
-		});
+		currPage.subscribe((dest) => this.changeCurrent(dest));
 	}
 
-	changeCurrent(dest: number) {
+	private createSummaryClickListener(spread: number, details: HTMLDetailsElement, currPage: CurrPage) {
+		return (e: Event) => {
+			e.preventDefault();
+			if (spread === this.currentSpread) {
+				details.open = false;
+				return;
+			}
+			this.changeCurrent(spread);
+			currPage.set(spread);
+		};
+	}
+
+	private changeCurrent(dest: number) {
 		this.currentSpread = dest;
 		for (const [spread, details] of this.items) {
 			const isCurrent = spread === this.currentSpread;

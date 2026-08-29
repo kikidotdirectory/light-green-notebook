@@ -1,20 +1,19 @@
+import type { CurrPage } from "./page-store.ts";
+
 declare const totalSpreads: number;
 
-export type FlipPageEvent = CustomEvent<number>;
-
-function createNotebook() {
+export function createNotebook(currPage: CurrPage) {
 	const fileExt = "png";
 	const notebookID = "lgn";
-	let currentPageNum = 0;
 
 	const notebookViewer = document.querySelector(".notebook-viewer") as HTMLElement;
 	const prev = document.querySelector(".page-link.prev") as HTMLButtonElement;
 	const next = document.querySelector(".page-link.next") as HTMLButtonElement;
 	const spreadImage = document.querySelector(".spread-image") as HTMLImageElement;
 
-	const fileName = (page: number) => String(page).padStart(3, "0");
+	const fileName = (pageNum: number) => String(pageNum).padStart(3, "0");
 	const pageSrc = (pageNum: number) => "/assets/spreads/" + fileName(pageNum) + "." + fileExt;
-	const hashFor = (page: number) => "#" + fileName(page);
+	const hashFor = (pageNum: number) => "#" + fileName(pageNum);
 
 	function getState(): number {
 		try {
@@ -38,15 +37,10 @@ function createNotebook() {
 		return pageNum;
 	}
 
-	function updateHash(pageNum: number, push?: boolean) {
+	function updateHash(pageNum: number) {
 		const target = hashFor(pageNum);
 		if (location.hash === target) return;
-
-		if (push) {
-			history.pushState(null, "", target);
-		} else {
-			history.replaceState(null, "", target);
-		}
+		history.replaceState(null, "", target);
 	}
 
 	function replaceSpreadImage(pageNum: number) {
@@ -54,27 +48,19 @@ function createNotebook() {
 		spreadImage.src = pageSrc(pageNum);
 	}
 
-	function goToSpread(pageNum: number, push?: boolean) {
-		currentPageNum = pageNum;
-		notebookViewer.dataset.spread = currentPageNum.toString();
-		replaceSpreadImage(currentPageNum);
-		setState(currentPageNum);
-		updateHash(currentPageNum, push);
+	function renderSpread(pageNum: number) {
+		notebookViewer.dataset.spread = pageNum.toString();
+		replaceSpreadImage(pageNum);
+		setState(pageNum);
+		updateHash(pageNum);
+		preloadPage(pageNum - 1);
+		preloadPage(pageNum + 1);
 	}
 
 	function flipPage(delta: number) {
-		const dest = currentPageNum + delta;
+		const dest = currPage.get() + delta;
 		if (dest < 0 || dest >= totalSpreads) return;
-		dispatchEvent(new CustomEvent<number>("notebook:flipPage", { bubbles: true, detail: dest }));
-		goToSpread(dest);
-		preloadPage(dest + delta);
-	}
-
-	function jumpToSpread(pageNum: number, push?: boolean) {
-		if (pageNum < 0 || pageNum >= totalSpreads) return;
-		goToSpread(pageNum, push);
-		preloadPage(currentPageNum + 1);
-		preloadPage(currentPageNum - 1);
+		currPage.set(dest);
 	}
 
 	function preloadPage(pageNum: number) {
@@ -86,29 +72,19 @@ function createNotebook() {
 
 	// On page load, render notebook.
 	function init() {
+		currPage.subscribe(renderSpread);
+
 		prev?.addEventListener("click", () => flipPage(-1));
 		next?.addEventListener("click", () => flipPage(1));
 
-		currentPageNum = parseHash() ?? getState();
-		if (currentPageNum) {
-			notebookViewer.dataset.spread = currentPageNum.toString();
-			replaceSpreadImage(currentPageNum);
-		}
-		setState(currentPageNum);
-		updateHash(currentPageNum);
+		const resolved = parseHash() ?? getState();
+		currPage.set(resolved);
 
 		window.addEventListener("hashchange", () => {
 			const pageNum = parseHash();
-			if (pageNum !== null) goToSpread(pageNum);
+			if (pageNum !== null) currPage.set(pageNum);
 		});
-
-		preloadPage(currentPageNum - 1);
-		preloadPage(currentPageNum + 1);
 	}
 
-	init();
-
-	return { flipPage, jumpToSpread };
+	return { flipPage, init };
 }
-
-export const notebook = createNotebook();
