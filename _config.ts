@@ -15,13 +15,20 @@ const site = lume({
 	dest: "./dist",
 });
 
+site.ignore("css/maps");
+
 site
 	.use(esbuild())
 	.use(nav())
 	.use(postcss({
 		includes: false,
 		useDefaultPlugins: false,
-		plugins: [postcssImportExtGlob, postcssImport, postcssMap({ maps: [{ fontMetrics }] }), autoprefixer],
+		plugins: [
+			postcssImportExtGlob,
+			postcssImport,
+			postcssMap({ basePath: "src/css/maps", maps: ["design-tokens.yml", { fontMetrics }] }),
+			autoprefixer,
+		],
 	}));
 
 site.addEventListener("beforeUpdate", (event) => {

@@ -1,6 +1,12 @@
 // Font metrics for computing line-height to baseline relationships
 // All values derived from standard TrueType/OpenType font metrics
 
+import { parse } from "@std/yaml";
+
+const { "line-height": LINE_HEIGHT } = parse(
+	await Deno.readTextFile("src/css/maps/design-tokens.yml"),
+) as { "line-height": number };
+
 interface FontMetric {
 	name: string;
 	// Font metrics in units per em (UPM)
@@ -87,9 +93,6 @@ for (const [key, metrics] of Object.entries(METRICS)) {
 	};
 }
 
-// Pre-compute common line-height values
-const COMMON_LINE_HEIGHTS = [1, 1.15, 1.2, 1.25, 1.3, 1.4, 1.5, 1.6, 1.75, 2];
-
 const fontBaselines: Record<
 	string,
 	{
@@ -119,9 +122,7 @@ for (const [key, font] of Object.entries(fonts)) {
 		}
 	> = {};
 
-	for (const lh of COMMON_LINE_HEIGHTS) {
-		lineHeightValues[lh] = font.lineHeightToBaseline(lh);
-	}
+	lineHeightValues[LINE_HEIGHT] = font.lineHeightToBaseline(LINE_HEIGHT);
 
 	fontBaselines[key] = {
 		name: font.name,
