@@ -6,48 +6,75 @@ dimensions: # in inches
 
 fileExt: png
 
-numbered_start: { spread: 2, side: right }   # where the numbered pages begin
+numbered_start: { spread: 2, side: right } # where the numbered pages begin
 
 sections:
   qnary:
     title: Qnary Internship
     desc: an internship that i did
-    pages: [ [2, 6] ]
+    pages: [[2, 6]]
   etansWebsite:
     title: Etan's website
-    pages: [ 6, 10, 11 ]
+    pages: [6, 10, 11]
   portfolio:
     title: Portfolio
-    pages: [ 8, 9, 12, 13, 14, [16, 21], 24, 25, 27, 28, 33, 34, 56, 85, 88, 89, 90, 119, 120, 121, 125, 128, 129, 130, 131, [137, 141] ]
+    pages: [
+      8,
+      9,
+      12,
+      13,
+      14,
+      [16, 21],
+      24,
+      25,
+      27,
+      28,
+      33,
+      34,
+      56,
+      85,
+      88,
+      89,
+      90,
+      119,
+      120,
+      121,
+      125,
+      128,
+      129,
+      130,
+      131,
+      [137, 141],
+    ]
   soda:
     title: The soda project
-    pages: [ [30, 35], [39, 42], [45, 50], 53, 55, 99, 100, 101, 102 ]
+    pages: [[30, 35], [39, 42], [45, 50], 53, 55, 99, 100, 101, 102]
   seasons:
     title: Seasons
-    pages: [ 42, 43 ]
+    pages: [42, 43]
   stillLife:
-    pages: [ 52, 54 ]
+    pages: [52, 54]
   meetup:
     title: Brand redesign
-    pages: [ [57, 62], [64, 67], [73, 76], 79 ]
+    pages: [[57, 62], [64, 67], [73, 76], 79]
   weThePeople:
     title: We the People
-    pages: [ 68, 78 ]
+    pages: [68, 78]
   blog:
     title: College blog
-    pages: [ 71, 72, 126, 127 ]
+    pages: [71, 72, 126, 127]
   imaginaryBrand:
     title: Imaginary brand design
-    pages: [ [80, 82], 92, 93, 103, 104, 106, 107, [113, 118], 122 ]
+    pages: [[80, 82], 92, 93, 103, 104, 106, 107, [113, 118], 122]
   navi:
     title: Navi
-    pages: [ 84, 86, 87 ]
+    pages: [84, 86, 87]
   designPoster:
     title: "What is design?"
-    pages: [ 91, [94, 98], [108, 110] ]
+    pages: [91, [94, 98], [108, 110]]
   activismAnimation:
     title: 3D Activism animation
-    pages: [ 110 ]
+    pages: [110]
   knowledgeOrganization:
     title: Knowledge organization
-    pages: [ [132, 136], 142 ]
+    pages: [[132, 136], 142]
