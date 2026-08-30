@@ -8,14 +8,14 @@ import postcssImport from "postcss-import";
 import postcssImportExtGlob from "postcss-import-ext-glob";
 import postcssMap from "postcss-map";
 
-import fontMetrics from "./src/_data/fontMetrics.ts";
+import designTokens from "./src/_config/design-tokens.ts";
 
 const site = lume({
 	src: "./src",
 	dest: "./dist",
 });
 
-site.ignore("css/maps");
+site.ignore("design-tokens");
 
 const isDev = Deno.env.get("LUME_LIVE_RELOAD") === "true";
 
@@ -28,7 +28,9 @@ site
 		plugins: [
 			postcssImportExtGlob,
 			postcssImport,
-			postcssMap({ basePath: "src/css/maps", maps: ["design-tokens.yml", { fontMetrics }] }),
+			postcssMap({
+				maps: [{ designTokens }],
+			}),
 			autoprefixer,
 		],
 	}));

@@ -1,12 +1,3 @@
-// Font metrics for computing line-height to baseline relationships
-// All values derived from standard TrueType/OpenType font metrics
-
-import { parse } from "@std/yaml";
-
-const { "line-height": LINE_HEIGHT } = parse(
-	await Deno.readTextFile("src/css/maps/design-tokens.yml"),
-) as { "line-height": number };
-
 interface FontMetric {
 	name: string;
 	// Font metrics in units per em (UPM)
@@ -30,7 +21,7 @@ const METRICS = {
 		descender: -452,
 		lineGap: 0,
 	},
-	timesNewRoman: {
+	times: {
 		name: "Times New Roman",
 		upm: 2048,
 		ascender: 1468,
@@ -71,69 +62,20 @@ function computeLineHeightToBaseline(
 	};
 }
 
-// Create metric objects with computed values
-const fonts: Record<string, FontMetric> = {};
-
-for (const [key, metrics] of Object.entries(METRICS)) {
-	fonts[key] = {
-		name: metrics.name,
-		upm: metrics.upm,
-		ascender: metrics.ascender,
-		descender: metrics.descender,
-		lineGap: metrics.lineGap,
-		lineHeightToBaseline: (lineHeight: number) => {
-			return computeLineHeightToBaseline(
-				1, // 1rem = 16px by default
-				lineHeight,
-				metrics.upm,
-				metrics.ascender,
-				metrics.descender,
-			);
-		},
-	};
-}
-
-const fontBaselines: Record<
-	string,
-	{
-		name: string;
-		rawMetrics: {
-			upm: number;
-			ascender: number;
-			descender: number;
-			lineGap: number;
-		};
-		lineHeightValues: Record<
-			number,
-			{
-				topToAscender: number;
-				baselineToBottom: number;
-			}
-		>;
-	}
-> = {};
-
-for (const [key, font] of Object.entries(fonts)) {
-	const lineHeightValues: Record<
-		number,
+export function calcFontMetrics(lineHeight: number) {
+	const fontBaselines: Record<
+		string,
 		{
 			topToAscender: number;
 			baselineToBottom: number;
 		}
 	> = {};
 
-	lineHeightValues[LINE_HEIGHT] = font.lineHeightToBaseline(LINE_HEIGHT);
+	for (const [key, metric] of Object.entries(METRICS)) {
+		fontBaselines[key] = {
+			...computeLineHeightToBaseline(1, lineHeight, metric.upm, metric.ascender, metric.descender),
+		};
+	}
 
-	fontBaselines[key] = {
-		name: font.name,
-		rawMetrics: {
-			upm: font.upm,
-			ascender: font.ascender,
-			descender: font.descender,
-			lineGap: font.lineGap,
-		},
-		lineHeightValues,
-	};
+	return fontBaselines;
 }
-
-export default fontBaselines;
