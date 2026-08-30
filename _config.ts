@@ -17,8 +17,10 @@ const site = lume({
 
 site.ignore("css/maps");
 
+const isDev = Deno.env.get("LUME_LIVE_RELOAD") === "true";
+
 site
-	.use(esbuild())
+	.use(esbuild({ options: { minify: !isDev } }))
 	.use(nav())
 	.use(postcss({
 		includes: false,
