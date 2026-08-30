@@ -47,7 +47,7 @@
     },
     "serve": {
       "description": "Run and serve the site for development",
-      "command": "deno run -P=lume --watch=src/css/maps/design-tokens.yml lume/cli.ts -s"
+      "command": "deno run -P=lume lume/cli.ts -s"
     }
   },
   "compilerOptions": {
