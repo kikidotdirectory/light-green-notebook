@@ -2,8 +2,12 @@
   "imports": {
     "@std/path": "jsr:@std/path@^1.1.4",
     "@std/yaml": "jsr:@std/yaml@^1.1.1",
+    "autoprefixer": "npm:autoprefixer@^10.5.4",
     "lume/": "https://cdn.jsdelivr.net/gh/lumeland/lume@3.2.4/",
-    "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts"
+    "lume/jsx-runtime": "https://cdn.jsdelivr.net/gh/oscarotero/ssx@0.1.14/jsx-runtime.ts",
+    "postcss-import": "npm:postcss-import@^17.0.0",
+    "postcss-import-ext-glob": "npm:postcss-import-ext-glob@^2.1.1",
+    "postcss-map": "npm:postcss-map@^0.11.0"
   },
   "permissions": {
     "lume": {

@@ -4,7 +4,6 @@
 
 - do not delete or clean up `dist` (it's gitignored build output, but may be actively served — leave it alone).
 - do not stop/kill a live dev server (`deno task serve`) if one is already running.
-- do not edit `src/style.css` directly — it's a generated file (see Architecture below) and gitignored; edits will be clobbered on the next build.
 
 ## Build & tooling
 
@@ -15,7 +14,7 @@
 ## Architecture notes
 
 - TS under `src/js` is auto-bundled by the `esbuild()` Lume plugin (declared in `_config.ts`).
-- `src/style.css` is generated from `src/css/global.css` via a custom `buildCss` step wired into `_config.ts`'s `beforeBuild`/`beforeUpdate`. Edit the source files under `src/css/` instead.
+- `src/css/global.css` is built to `/style.css` by Lume's `postcss()` plugin (configured in `_config.ts` with `postcss-import-ext-glob` + `postcss-import` + `autoprefixer`, in that order). Because `postcss-import` resolves partials at process time, Lume's watcher only tracks `global.css` itself — a `beforeUpdate` listener in `_config.ts` marks `global.css` as changed whenever any file under `src/css/` changes, so edits to partials still trigger a rebuild.
 - `totalSpreads` and per-spread annotations aren't manually maintained: `src/_data/notebooks.ts` globs `src/assets/spreads/*.png` for the count and merges in `src/_data/_notebooks/lgn.yaml`'s `sections`/`numbered_start`. Adding/removing a spread image just works without updating a count anywhere.
 
 ## Conventions

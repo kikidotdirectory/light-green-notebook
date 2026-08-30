@@ -1,30 +1,32 @@
 import lume from "lume/mod.ts";
 import esbuild from "lume/plugins/esbuild.ts";
 import nav from "lume/plugins/nav.ts";
+import postcss from "lume/plugins/postcss.ts";
 
-import { buildCss } from "./src/_scripts/buildCss.ts";
+import autoprefixer from "autoprefixer";
+import postcssImport from "postcss-import";
+import postcssImportExtGlob from "postcss-import-ext-glob";
+import postcssMap from "postcss-map";
+
+import fontMetrics from "./src/_data/fontMetrics.ts";
 
 const site = lume({
 	src: "./src",
 	dest: "./dist",
-	watcher: {
-		dependencies: {
-			"_data/buildAnnotations.ts": ["annotations.json"],
-		},
-	},
 });
 
 site
 	.use(esbuild())
-	.use(nav());
+	.use(nav())
+	.use(postcss({
+		includes: false,
+		useDefaultPlugins: false,
+		plugins: [postcssImportExtGlob, postcssImport, postcssMap({ maps: [{ fontMetrics }] }), autoprefixer],
+	}));
 
-site.addEventListener("beforeBuild", async () => {
-	await buildCss("src/css/global.css", "src/style.css");
-});
-
-site.addEventListener("beforeUpdate", async (event) => {
+site.addEventListener("beforeUpdate", (event) => {
 	if ([...event.files].some((f) => f.startsWith("/css/"))) {
-		await buildCss("src/css/global.css", "src/style.css");
+		event.files.add("/css/global.css");
 	}
 });
 
@@ -37,7 +39,7 @@ site.filter("padNum", (number, count) => {
 });
 
 site.add([".png"]);
-site.add("style.css");
+site.add("css/global.css", "/style.css");
 site.add("script.ts");
 
 export default site;
