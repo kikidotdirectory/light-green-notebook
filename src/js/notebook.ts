@@ -1,4 +1,4 @@
-import { type PageStore } from "./page-store.ts";
+import { type PageStore } from "./page-state.ts";
 
 declare const totalSpreads: number;
 
