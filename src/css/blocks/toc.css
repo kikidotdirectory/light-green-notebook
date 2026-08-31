@@ -2,6 +2,7 @@
 	position: relative;
 	grid-area: toc;
 	overflow-y: auto;
+	container-type: size;
 	mask-image: linear-gradient(
 		to bottom,
 		transparent,
@@ -14,14 +15,16 @@
 
 .toc ol {
 	list-style: none;
+	padding-bottom: 50cqh;
 }
 
 .toc ol > li {
 	position: relative;
-	margin-bottom: var(--size-2-2);
+	padding-bottom: var(--size-2-2);
 	display: flex;
 	align-items: stretch;
 	gap: var(--size-2-3);
+
 }
 
 .toc .spine {
@@ -43,13 +46,8 @@
 	opacity: 0.2;
 }
 
-.toc li:has(details[open]) {
-	margin-top: var(--size-4-1);
-	margin-bottom: var(--size-4-2);
-
-	& .spine {
-		opacity: 1;
-	}
+.toc li:has(details[open]) .spine {
+	opacity: 1;
 }
 
 .toc .content {
