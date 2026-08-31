@@ -7,14 +7,13 @@
 	align-items: baseline;
 	gap: var(--size-4-2);
 	font-size: var(--font-base-serif);
+
+	&:last-child {
+		padding-bottom: 1px;
+	}
 }
 
 .annotation-title {
 	color: var(--color-base-900);
 }
 
-.annotation-pages {
-	color: var(--color-base-600);
-	font-size: var(--font-base-sans);
-	font-family: Arial, Helvetica, sans-serif;
-}
