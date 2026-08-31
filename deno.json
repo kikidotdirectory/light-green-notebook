@@ -71,7 +71,9 @@
 		],
 		"rules": {
 			"exclude": [
-				"no-import-prefix"
+				"no-import-prefix",
+				"no-window-prefix",
+				"no-window"
 			]
 		}
 	},
