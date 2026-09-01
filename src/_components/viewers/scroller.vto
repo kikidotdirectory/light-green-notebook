@@ -1,0 +1,27 @@
+{{# mobile viewer: all spreads rendered as a horizontally scroll-snapped strip. hidden under [data-mode="double"] (see notebook-viewer.css) #}}
+<div class="notebook-scroll">
+	{{
+		for 
+		spread of Array.from(
+			{ length: notebooks.lgn.totalSpreads },
+			(_, i) => i,
+		)
+
+	}}
+		<div class="spread-wrapper">
+			<img
+				class="scroll-image"
+				data-spread="{{ spread }}"
+				src="/assets/spreads/{{ spread |> padNum(3) }}.png"
+				loading="lazy"
+				alt=""
+			>
+			<div class="pages-wrapper">
+				{{ if spread !== 0 }}
+					<div class="page-snap"></div>
+				{{ /if }}
+				<div class="page-snap"></div>
+			</div>
+		</div>
+	{{ /for }}
+</div>
