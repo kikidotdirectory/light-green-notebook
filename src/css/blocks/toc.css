@@ -30,7 +30,6 @@
 	display: flex;
 	align-items: stretch;
 	gap: var(--size-2-3);
-
 }
 
 .toc .spine {
@@ -58,4 +57,23 @@
 
 .toc .content {
 	margin-top: var(--size-2-1);
+}
+
+[data-mode="single"] .toc {
+	& ol {
+		display: flex;
+		overflow-x: auto;
+		overflow-y: hidden;
+		scroll-snap-type: x mandatory;
+		-webkit-overflow-scrolling: touch;
+		width: 100%;
+		height: 100%;
+	}
+	& ol > li {
+		flex: 0 0 100%;
+		scroll-snap-align: center;
+		& .spine {
+			height: 1cap;
+		}
+	}
 }
