@@ -11,6 +11,12 @@
 		transparent
 	);
 	padding-top: 12px;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
 }
 
 .toc ol {
