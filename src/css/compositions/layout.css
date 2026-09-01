@@ -16,7 +16,16 @@ main {
 	grid-area: book;
 }
 
-main {
+/* position the notebook-viewer in the absolutely so that its contents are not bound by the width of its parent container */
+
+/* this approach was chosen over others for a few reasons:
+ * since the cover (spread=0) should have the ribbon overflowing to the right.
+ * - if it were justified center, that extra width cause it to be visually askew.
+ * - if the image was expanded to have it visually centered, it would cause the page-flipping button to be too large
+ * - if it was justified left, it would be weirdly animated as the column shrinks
+ */
+
+[data-mode="double"] main {
 	position: absolute;
 	top: calc((100% - var(--layout-row)) / 2);
 	left: calc((100% - var(--layout-col)) / 2);
@@ -24,10 +33,30 @@ main {
 	height: var(--layout-row);
 }
 
-body:has(> main > .notebook-viewer[data-spread="0"]) {
+[data-mode="double"] body:has(> main > .notebook-viewer[data-spread="0"]) {
 	grid-template-columns: 1fr calc(var(--layout-col) / 2) 1fr;
 	& main {
 		left: calc((100% - var(--layout-col) / 2) / 2);
 		width: calc(var(--layout-col) / 2);
+	}
+}
+
+[data-mode="single"] {
+	& body {
+		grid-template-columns: 1fr;
+		grid-template-rows: minmax(5lh, 10lh) 1fr 1fr;
+		grid-template-areas:
+			"header"
+			"book"
+			"footer";
+		padding: 0;
+
+		height: 100vh;
+	}
+	& .notebook-container {
+		display: none;
+	}
+	& .notebook-scroll {
+		display: flex;
 	}
 }

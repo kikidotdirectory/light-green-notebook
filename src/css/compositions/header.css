@@ -16,3 +16,10 @@ header > * {
 	padding: var(--size-4-2);
 	padding-left: var(--size-4-4);
 }
+
+[data-mode="single"] header {
+	grid-area: header;
+	grid-template-rows: 1fr;
+	grid-template-columns: 1fr;
+	grid-template-areas: "toc";
+}

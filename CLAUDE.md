@@ -19,5 +19,5 @@
 
 ## Conventions
 
-- Spread image filenames (`src/assets/spreads/NNN.png`) and the URL hash (`#NNN`) are both zero-padded to 3 digits. This padding is duplicated in four places — keep them in sync if it ever changes: `src/js/page-navigation.ts` (`fileName`), `src/js/page-store.ts` (`pad`/`hashFor`), `src/index.vto` (hardcoded first-load image src), `src/scroll.vto` (inline `padStart`).
+- Spread image filenames (`src/assets/spreads/NNN.png`) and the URL hash (`#NNN`) are both zero-padded to 3 digits. This padding is duplicated in several places — keep them in sync if it ever changes: `src/js/notebook.ts` (`fileName`), `src/js/page-state.ts` (`pad`/`hashFor`), `src/index.vto` (hardcoded first-load image src, and the `.notebook-scroll` image loop via the `padNum` Vento filter), `src/_components/tocItem.vto` (`padNum` filter). `padNum` is defined once in `_config.ts`, so template sites should prefer it over duplicating a `padStart` call.
 - When bulk-renaming/renumbering the spread assets, use `git mv` per file so git tracks them as renames instead of delete+add.
