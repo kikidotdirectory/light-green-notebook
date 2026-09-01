@@ -27,16 +27,11 @@ title: ◻
 		{{ comp.tocList() }}
 	</header>
 	<main>
-		<figure
-			class="notebook-viewer"
-			data-spread="0"
-		>
-			{{# desktop: paginated two-page spread viewer, shown when [data-mode="double"] #}}
-			{{ comp.viewers.container() }}
+		{{# desktop: paginated two-page spread viewer, shown when [data-mode="double"] #}}
+		{{ comp.viewers.container() }}
 
-			{{# mobile: horizontally scrolling single-page viewer, shown when [data-mode="single"] #}}
-			{{ comp.viewers.scroller() }}
-		</figure>
+		{{# mobile: horizontally scrolling single-page viewer, shown when [data-mode="single"] #}}
+		{{ comp.viewers.scroller() }}
 	</main>
 	{{ comp.marks() }}
 {{ /layout }}
