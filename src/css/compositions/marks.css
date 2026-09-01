@@ -116,3 +116,7 @@
 .marks .left:before {
 	right: var(--offset);
 }
+
+[data-mode="single"] .marks {
+	display: none;
+}
