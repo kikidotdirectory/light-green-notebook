@@ -1,9 +1,6 @@
-{{# mobile viewer: all spreads rendered as a horizontally scroll-snapped strip. hidden under [data-mode="double"] (see notebook-viewer.css) #}}
-<figure
-	class="notebook-viewer"
-	data-spread="0"
->
-	<div class="notebook-scroll">
+{{# desktop viewer: single paginated spread, flipped via .page-link buttons. hidden under [data-mode="single"] (see notebook-viewer.css) #}}
+<main class="notebook-viewer">
+	<figure class="notebook-container">
 		{{
 			for 
 			spread of Array.from(
@@ -12,7 +9,7 @@
 			)
 
 		}}
-			<div class="spread-wrapper">
+			<div class="spread-wrapper" data-spread="{{ spread }}">
 				<img
 					class="scroll-image"
 					data-spread="{{ spread }}"
@@ -23,14 +20,12 @@
 				<div class="pages-wrapper">
 					{{ if spread !== 0 }}
 						<div class="page-snap"></div>
+						<button class="page-link prev"></button>
 					{{ /if }}
 					<div class="page-snap"></div>
+					<button class="page-link next"></button>
 				</div>
 			</div>
 		{{ /for }}
-	</div>
-</figure>
-<div class="buttons">
-	<button class="left">left</button>
-	<button class="right">right</button>
-</div>
+	</figure>
+</main>

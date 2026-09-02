@@ -33,7 +33,7 @@ main {
 	height: var(--layout-row);
 }
 
-[data-mode="double"] body:has(> main > .notebook-viewer[data-spread="0"]) {
+[data-mode="double"] body:has(> main[data-active-spread="0"]) {
 	grid-template-columns: 1fr calc(var(--layout-col) / 2) 1fr;
 	& main {
 		left: calc((100% - var(--layout-col) / 2) / 2);
@@ -52,11 +52,5 @@ main {
 		padding: 0;
 
 		height: 100vh;
-	}
-	& .notebook-container {
-		display: none;
-	}
-	& .notebook-scroll {
-		display: flex;
 	}
 }

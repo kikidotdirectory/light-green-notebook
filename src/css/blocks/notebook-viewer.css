@@ -6,6 +6,14 @@
 	padding-bottom: var(--size-4-2);
 }
 
+[data-active="true"] {
+	display: block;
+}
+
+[data-active="false"] {
+	display: none;
+}
+
 .notebook-container {
 	user-select: none;
 	height: auto;
@@ -40,44 +48,33 @@
 	}
 }
 
-[data-mode="double"] .notebook-viewer[data-spread="0"] {
-	display: flex;
+.notebook-viewer[data-active-spread="0"] .notebook-container {
 	height: 100%;
+	width: min-content;
+}
+
+[data-spread="0"] {
 	& .page-link.next {
 		width: 100%;
 	}
 	& .page-link.prev {
 		visibility: hidden;
 	}
-	& .spread-image {
-		display: none;
-	}
-	& .cover-image {
-		display: block;
-		height: 100%;
-		width: auto;
-		max-width: none;
-	}
-}
-
-[data-mode="double"] .notebook-scroll {
-	display: none;
+	height: 100%;
+	width: auto;
+	max-width: none;
 }
 
 [data-mode="single"] {
-	& .notebook-viewer {
-		padding: 0;
+	& .notebook-viewer:has(> .notebook-container) {
+		display: none;
 	}
 
-	/* display is set to flex in compositions/layout.css, which owns
+	/* display is set to flex in compositions/layout.css, which cares for
 	mode-based display toggling for .notebook-container/.notebook-scroll */
 	& .notebook-scroll {
-		overflow-x: auto;
-		overflow-y: hidden;
-		scroll-snap-type: x mandatory;
-		-webkit-overflow-scrolling: touch;
-		width: 100%;
-		height: 100%;
+		display: flex;
+		overflow-x: hidden;
 	}
 
 	& .notebook-scroll .spread-wrapper {
@@ -108,7 +105,7 @@
 		scroll-snap-align: center;
 	}
 
-	& .notebook-scroll .spread-wrapper:has([data-spread="0"]) {
+	& .notebook-scroll .spread-wrapper[data-spread="0"] {
 		flex: 0 0 110%;
 		width: 100%;
 		height: auto;

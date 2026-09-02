@@ -4,40 +4,36 @@ import { type PageStore } from "./page-state.ts";
 declare const totalSpreads: number;
 
 export function initNotebook(pageStore: PageStore) {
-	const fileExt = "png";
-
 	const notebookViewer = document.querySelector(
 		".notebook-viewer",
 	) as HTMLElement;
-	const spreadImage = document.querySelector(
-		".spread-image",
-	) as HTMLImageElement;
-	const scrollContainer = document.querySelector(
-		".notebook-scroll",
-	) as HTMLElement;
+	const spreads = document.querySelectorAll(
+		".spread-wrapper",
+	) as NodeListOf<HTMLElement>;
+	const images = new Map(
+		Array.from(spreads, (spread) => [
+			Number(spread.dataset.spread),
+			spread.querySelector(".scroll-image") as HTMLImageElement,
+		]),
+	);
 	// one entry per spread, holding its .page-snap targets in left-to-right
 	// order (the cover spread has just one; every other spread has two, one
 	// per physical page)
-	const pageSnaps = Array.from(
-		scrollContainer.querySelectorAll(".spread-wrapper"),
-	).map((wrapper) => Array.from(wrapper.querySelectorAll(".page-snap"))) as HTMLElement[][];
-
-	const fileName = (pageNum: number) => String(pageNum).padStart(3, "0");
-	const pageSrc = (pageNum: number) => "/assets/spreads/" + fileName(pageNum) + "." + fileExt;
-
-	function replaceSpreadImage(pageNum: number) {
-		if (pageNum === 0) return;
-		spreadImage.src = pageSrc(pageNum);
-	}
+	// const pageSnaps = Array.from(
+	// 	scrollContainer.querySelectorAll(".spread-wrapper"),
+	// ).map((wrapper) => Array.from(wrapper.querySelectorAll(".page-snap"))) as HTMLElement[][];
 
 	function renderSpread(pageNum: number) {
-		notebookViewer.dataset.spread = pageNum.toString();
-		replaceSpreadImage(pageNum);
+		notebookViewer.dataset.activeSpread = pageNum.toString();
+		for (const spread of spreads) {
+			const isCurrent = Number(spread.dataset.spread) === pageStore.get();
+			spread.dataset.active = String(isCurrent);
+		}
 		// in single mode the scroll-image list is doing its own (lazy)
 		// loading, so eagerly preloading neighbors here would be redundant
 		if (mode.get() === "double") {
-			preloadPage(pageNum - 1);
-			preloadPage(pageNum + 1);
+			preloadSpread(pageNum - 1);
+			preloadSpread(pageNum + 1);
 		}
 	}
 
@@ -49,71 +45,42 @@ export function initNotebook(pageStore: PageStore) {
 	function flipPage(delta: number) {
 		const dest = pageStore.get() + delta;
 		if (dest < 0 || dest >= totalSpreads) return;
-		pendingEdge = delta < 0 ? "end" : "start";
+		// pendingEdge = delta < 0 ? "end" : "start";
 		pageStore.set(dest);
 	}
 
-	function preloadPage(pageNum: number) {
-		if (pageNum < 0) return;
-		if (pageNum > totalSpreads) return;
-		const img = new Image();
-		img.src = pageSrc(pageNum);
+	function preloadSpread(spreadNum: number) {
+		if (spreadNum < 0) return;
+		if (spreadNum > totalSpreads) return;
+		const image = images.get(spreadNum);
+		if (image) image.loading = "eager";
 	}
 
-	const prev = document.querySelector(".page-link.prev") as HTMLButtonElement;
-	const next = document.querySelector(".page-link.next") as HTMLButtonElement;
-	prev?.addEventListener("click", () => flipPage(-1));
-	next?.addEventListener("click", () => flipPage(1));
+	const prev = document.querySelectorAll(".page-link.prev") as NodeListOf<HTMLButtonElement>;
+	const next = document.querySelectorAll(".page-link.next") as NodeListOf<HTMLButtonElement>;
+	prev.forEach((prev) => {
+		prev.addEventListener("click", () => flipPage(-1));
+	});
+	next.forEach((next) => {
+		next.addEventListener("click", () => flipPage(1));
+	});
 
-	function scrollToSpread(pageNum: number, behavior: ScrollBehavior, edge: "start" | "end" = "start") {
-		const snaps = pageSnaps[pageNum];
-		if (!snaps || snaps.length === 0) return;
-		const target = edge === "end" ? snaps[snaps.length - 1] : snaps[0];
-		const inline = pageNum === 0 ? "start" : "center";
-		target.scrollIntoView({ behavior, inline, block: "nearest" });
-	}
-
-	// fires once the container settles after a user swipe. A programmatic
-	// scrollToSpread call also settles into a scrollend, but by then
-	// pageStore already matches the scrolled-to spread, so the equality
-	// check below makes that case a no-op instead of feeding back into
-	// another pageStore.set.
-	function onScrollEnd() {
-		const containerRect = scrollContainer.getBoundingClientRect();
-		const center = containerRect.left + containerRect.width / 2;
-		let closest = pageStore.get();
-		let closestEdge: "start" | "end" = "start";
-		let closestDist = Infinity;
-		pageSnaps.forEach((snaps, pageNum) => {
-			snaps.forEach((snap, i) => {
-				const rect = snap.getBoundingClientRect();
-				const dist = Math.abs(rect.left + rect.width / 2 - center);
-				if (dist < closestDist) {
-					closestDist = dist;
-					closest = pageNum;
-					closestEdge = i === snaps.length - 1 ? "end" : "start";
-				}
-			});
-		});
-		if (closest !== pageStore.get()) {
-			// resync to the edge the swipe actually landed on, so the
-			// resulting pageStore update's re-scroll below is a no-op
-			// instead of fighting the swipe by jumping to the other page
-			pendingEdge = closestEdge;
-			pageStore.set(closest);
-		}
-	}
-
-	scrollContainer.addEventListener("scrollend", onScrollEnd);
+	// function scrollToSpread(pageNum: number, behavior: ScrollBehavior, edge: "start" | "end" = "start") {
+	// 	const snaps = pageSnaps[pageNum];
+	// 	if (!snaps || snaps.length === 0) return;
+	// 	const target = edge === "end" ? snaps[snaps.length - 1] : snaps[0];
+	// 	const inline = pageNum === 0 ? "start" : "center";
+	// 	target.scrollIntoView({ behavior, inline, block: "nearest" });
+	// }
 
 	const mode = checkMode();
 
 	pageStore.subscribe((pageNum) => {
 		renderSpread(pageNum);
-		if (mode.get() === "single") {
-			scrollToSpread(pageNum, "smooth", pendingEdge);
-			pendingEdge = "start";
-		}
+		// if (mode.get() === "single") {
+		// 	scrollToSpread(pageNum, "smooth", pendingEdge);
+		// 	pendingEdge = "start";
+		// }
 	});
 
 	mode.subscribe((current) => {
@@ -122,9 +89,10 @@ export function initNotebook(pageStore: PageStore) {
 		// navigated pages while in double mode. pendingEdge carries over
 		// from any flip that happened while in double mode, so this lands
 		// on the same side the user was last reading from.
-		if (current === "single") {
-			scrollToSpread(pageStore.get(), "instant", pendingEdge);
-			pendingEdge = "start";
-		}
+
+		// if (current === "single") {
+		// 	scrollToSpread(pageStore.get(), "instant", pendingEdge);
+		// 	pendingEdge = "start";
+		// }
 	});
 }

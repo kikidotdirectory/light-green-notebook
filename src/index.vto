@@ -26,12 +26,6 @@ title: ◻
 	<header>
 		{{ comp.tocList() }}
 	</header>
-	<main>
-		{{# desktop: paginated two-page spread viewer, shown when [data-mode="double"] #}}
-		{{ comp.viewers.container() }}
-
-		{{# mobile: horizontally scrolling single-page viewer, shown when [data-mode="single"] #}}
-		{{ comp.viewers.scroller() }}
-	</main>
+	{{ comp.notebook() }}
 	{{ comp.marks() }}
 {{ /layout }}
