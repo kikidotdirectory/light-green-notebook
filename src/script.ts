@@ -1,4 +1,4 @@
-import { initNotebook } from "./js/notebook.ts";
+import { initNotebook } from "./js/notebook-controller.ts";
 import { pageStore as storePageState } from "./js/page-state.ts";
 import { initToc } from "./js/toc.ts";
 
