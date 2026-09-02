@@ -6,14 +6,6 @@
 	padding-bottom: var(--size-4-2);
 }
 
-[data-active="true"] {
-	display: block;
-}
-
-[data-active="false"] {
-	display: none;
-}
-
 .notebook-container {
 	user-select: none;
 	height: auto;
@@ -22,13 +14,29 @@
 	position: relative;
 }
 
-.spread-image {
-	object-fit: cover;
-	width: 100%;
+.notebook-viewer[data-active-spread="0"] .notebook-container {
+	height: 100%;
+	width: min-content;
 }
 
-.cover-image {
+[data-active="true"] {
+	display: block;
+}
+
+[data-active="false"] {
 	display: none;
+}
+
+[data-spread="0"] {
+	& .page-link.next {
+		width: 100%;
+	}
+	& .page-link.prev {
+		visibility: hidden;
+	}
+	height: 100%;
+	width: auto;
+	max-width: none;
 }
 
 .page-link {
@@ -48,36 +56,39 @@
 	}
 }
 
-.notebook-viewer[data-active-spread="0"] .notebook-container {
-	height: 100%;
-	width: min-content;
-}
-
-[data-spread="0"] {
-	& .page-link.next {
-		width: 100%;
-	}
-	& .page-link.prev {
-		visibility: hidden;
-	}
-	height: 100%;
-	width: auto;
-	max-width: none;
+.mobile-nav-buttons {
+	display: none;
 }
 
 [data-mode="single"] {
-	& .notebook-viewer:has(> .notebook-container) {
-		display: none;
-	}
-
-	/* display is set to flex in compositions/layout.css, which cares for
-	mode-based display toggling for .notebook-container/.notebook-scroll */
-	& .notebook-scroll {
-		display: flex;
+	& .notebook-viewer {
+		padding: 0; /* so spread overflow is flush with edges */
 		overflow-x: hidden;
 	}
 
-	& .notebook-scroll .spread-wrapper {
+	& .notebook-container {
+		display: flex;
+		will-change: transform;
+	}
+
+	& [data-active="false"] {
+		display: block;
+	}
+
+	& .page-link.next,
+	& .page-link.prev {
+		display: none;
+	}
+
+	& .mobile-nav-buttons {
+		display: flex;
+		justify-content: space-between;
+		width: 100%;
+		height: auto;
+		padding: 0 var(--size-4-3);
+	}
+
+	& .spread-wrapper {
 		position: relative;
 		flex: 0 0 190%;
 		width: 100%;
@@ -105,10 +116,10 @@
 		scroll-snap-align: center;
 	}
 
-	& .notebook-scroll .spread-wrapper[data-spread="0"] {
+	& .spread-wrapper[data-spread="0"] {
 		flex: 0 0 110%;
-		width: 100%;
-		height: auto;
+		height: 100%;
+		width: auto;
 
 		padding-left: 2%;
 		& .page-snap {
