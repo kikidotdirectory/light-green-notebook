@@ -34,9 +34,11 @@ main {
 }
 
 [data-mode="double"] body:has(> main[data-active-spread="0"]) {
-	grid-template-columns: 1fr calc(var(--layout-col) / 2) 1fr;
+	/* fixme janky hack to have the notebook be centered as the col width doesn't
+	 * accommodate for the image's padding */
+	grid-template-columns: 1fr calc(var(--layout-col) / 2 + 1rem) 1fr;
 	& main {
-		left: calc((100% - var(--layout-col) / 2) / 2);
+		left: calc((100% - var(--layout-col) / 2 - 1.5rem) / 2);
 		width: calc(var(--layout-col) / 2);
 	}
 }
