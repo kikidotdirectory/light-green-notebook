@@ -63,35 +63,24 @@
 [data-mode="single"] {
 	& .notebook-viewer:has(> .notebook-container) {
 		padding: 0;
+		height: 100%;
 	}
 
 	& .notebook-container {
 		display: flex;
 		overflow-x: scroll;
 		scroll-snap-type: x mandatory;
-	}
-
-	/* todo: figure out separation of css between notebook and toc
-	 */
-	& .notebook-container,
-	& .toc ol {
-		scrollbar-width: none; /* Firefox */
-		-ms-overflow-style: none; /* IE 10+ */
-		&::-webkit-scrollbar {
-			background: transparent; /* Chrome/Safari/Webkit */
-			height: 0px;
-		}
+		height: inherit;
 	}
 
 	& .notebook-container .spread-wrapper {
 		position: relative;
-		flex: 0 0 190%;
-		width: 100%;
+		flex: 0 0 auto;
 		height: 100%;
 		display: block;
 
 		& .spread-image {
-			width: 100%;
+			width: auto;
 			height: 100%;
 			object-fit: contain;
 			user-select: none;
@@ -115,15 +104,24 @@
 	}
 
 	& .spread-wrapper[data-spread="0"] {
-		flex: 0 0 110%;
-		width: 100%;
-		height: auto;
-
+		height: 100%;
 		padding-left: 2%;
 		& .page-snap {
 			padding: 0;
 			scroll-snap-align: start;
 			padding-left: 2%;
+		}
+	}
+
+	/* todo: figure out separation of css between notebook and toc
+	 */
+	& .notebook-container,
+	& .toc ol {
+		scrollbar-width: none; /* Firefox */
+		-ms-overflow-style: none; /* IE 10+ */
+		&::-webkit-scrollbar {
+			background: transparent; /* Chrome/Safari/Webkit */
+			height: 0px;
 		}
 	}
 }
