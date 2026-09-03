@@ -6,19 +6,6 @@
 	padding-bottom: var(--size-4-2);
 }
 
-.notebook-container {
-	user-select: none;
-	height: auto;
-	max-width: var(--spread-width);
-	width: 100%;
-	position: relative;
-}
-
-.notebook-viewer[data-active-spread="0"] .notebook-container {
-	height: 100%;
-	width: min-content;
-}
-
 [data-active="true"] {
 	display: block;
 }
@@ -27,16 +14,21 @@
 	display: none;
 }
 
-[data-spread="0"] {
-	& .page-link.next {
-		width: 100%;
-	}
-	& .page-link.prev {
-		visibility: hidden;
-	}
-	height: 100%;
-	width: auto;
-	max-width: none;
+.notebook-container {
+	user-select: none;
+	height: auto;
+	max-width: var(--spread-width);
+	width: 100%;
+	position: relative;
+}
+
+.spread-image {
+	object-fit: cover;
+	width: 100%;
+}
+
+.cover-image {
+	display: none;
 }
 
 .page-link {
@@ -56,39 +48,36 @@
 	}
 }
 
-.mobile-nav-buttons {
-	display: none;
+.notebook-viewer[data-active-spread="0"] .notebook-container {
+	height: 100%;
+	width: min-content;
+}
+
+[data-spread="0"] {
+	& .page-link.next {
+		width: 100%;
+	}
+	& .page-link.prev {
+		visibility: hidden;
+	}
+	height: 100%;
+	width: auto;
+	max-width: none;
 }
 
 [data-mode="single"] {
-	& .notebook-viewer {
-		padding: 0; /* so spread overflow is flush with edges */
-		overflow-x: hidden;
-	}
-
-	& .notebook-container {
-		display: flex;
-		will-change: transform;
-	}
-
-	& [data-active="false"] {
-		display: block;
-	}
-
-	& .page-link.next,
-	& .page-link.prev {
+	& .notebook-viewer:has(> .notebook-container) {
 		display: none;
 	}
 
-	& .mobile-nav-buttons {
+	/* display is set to flex in compositions/layout.css, which cares for
+	mode-based display toggling for .notebook-container/.notebook-scroll */
+	& .notebook-scroll {
 		display: flex;
-		justify-content: space-between;
-		width: 100%;
-		height: auto;
-		padding: 0 var(--size-4-3);
+		overflow-x: hidden;
 	}
 
-	& .spread-wrapper {
+	& .notebook-scroll .spread-wrapper {
 		position: relative;
 		flex: 0 0 190%;
 		width: 100%;
@@ -116,10 +105,10 @@
 		scroll-snap-align: center;
 	}
 
-	& .spread-wrapper[data-spread="0"] {
+	& .notebook-scroll .spread-wrapper[data-spread="0"] {
 		flex: 0 0 110%;
-		height: 100%;
-		width: auto;
+		width: 100%;
+		height: auto;
 
 		padding-left: 2%;
 		& .page-snap {
