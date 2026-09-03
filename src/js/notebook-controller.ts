@@ -75,6 +75,12 @@ export function initNotebook(pageStore: PageStore) {
 
 	const mode = checkMode();
 
+	notebookViewer.addEventListener("scroll", () => {
+		if (mode.get() !== "single") return;
+		const maxScroll = notebookViewer.scrollWidth - notebookViewer.clientWidth;
+		console.log(maxScroll);
+	});
+
 	pageStore.subscribe((pageNum) => {
 		renderSpread(pageNum);
 		// if (mode.get() === "single") {
