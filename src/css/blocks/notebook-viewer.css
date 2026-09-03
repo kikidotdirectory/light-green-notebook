@@ -76,6 +76,18 @@
 		scroll-snap-type: x mandatory;
 	}
 
+	/* todo: figure out separation of css between notebook and toc
+	 */
+	& .notebook-container,
+	& .toc ol {
+		scrollbar-width: none; /* Firefox */
+		-ms-overflow-style: none; /* IE 10+ */
+		&::-webkit-scrollbar {
+			background: transparent; /* Chrome/Safari/Webkit */
+			height: 0px;
+		}
+	}
+
 	& .notebook-container .spread-wrapper {
 		position: relative;
 		flex: 0 0 190%;
