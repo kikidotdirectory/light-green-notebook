@@ -48,7 +48,9 @@
 	}
 }
 
-.notebook-viewer[data-active-spread="0"] .notebook-container {
+[data-mode="double"]
+	.notebook-viewer[data-active-spread="0"]
+	.notebook-container {
 	height: 100%;
 	width: min-content;
 }
