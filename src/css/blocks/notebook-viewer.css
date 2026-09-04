@@ -124,4 +124,29 @@
 			height: 0px;
 		}
 	}
+
+	/* snap-point debug view (src/debug-snaps.vto): no .spread-image is
+	 * rendered there, so .spread-wrapper's width - normally driven by the
+	 * loaded image's intrinsic aspect ratio - has to come from the
+	 * notebook's own declared dimensions instead. .page-snap otherwise
+	 * exists only as an invisible scroll-snap target/click zone; here it's
+	 * made visible and labeled so its exact size can be inspected. */
+	& .notebook-viewer.snap-debug .spread-wrapper {
+		aspect-ratio: var(--notebook-width) / var(--notebook-height);
+
+		&:not([data-spread="0"]) {
+			aspect-ratio: calc(var(--notebook-width) * 2) / var(--notebook-height);
+		}
+	}
+}
+
+.notebook-viewer.snap-debug .page-snap {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: color-mix(in srgb, canvasText 8%, transparent);
+	outline: 1px solid color-mix(in srgb, canvasText 35%, transparent);
+	outline-offset: -1px;
+	font-size: 2rem;
+	color: canvasText;
 }
