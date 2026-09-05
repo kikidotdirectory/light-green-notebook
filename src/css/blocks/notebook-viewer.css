@@ -61,9 +61,10 @@
 }
 
 [data-mode="single"] {
-	& .notebook-viewer:has(> .notebook-container) {
+	& .notebook-viewer {
 		padding: 0;
 		height: 100%;
+		min-width: 0;
 	}
 
 	& .notebook-container {
