@@ -27,6 +27,10 @@ forceMode: single
 	{{# forceMode (see layouts/base.vto + js/mode.ts) pins this page to
 		[data-mode="single"] regardless of viewport, since the snap points
 		this page exists to visualize only appear in that mode #}}
+
+	<header>
+		{{ comp.tocList() }}
+	</header>
 	<main class="notebook-viewer snap-debug">
 		<figure class="notebook-container">
 			{{ set snapIndex = 0 }}
@@ -51,4 +55,5 @@ forceMode: single
 			{{ /for }}
 		</figure>
 	</main>
+	{{ comp.marks() }}
 {{ /layout }}
