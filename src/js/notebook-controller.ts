@@ -5,14 +5,14 @@ import { type TocApi } from "./toc.ts";
 declare const totalSpreads: number;
 
 export function initNotebook(pageStore: PageStore, toc: TocApi) {
-	const notebookViewer = document.querySelector(".notebook-viewer") as HTMLElement;
-	const notebookContainer = document.querySelector(".notebook-container") as HTMLElement;
-	const spreads = document.querySelectorAll(".spread-wrapper") as NodeListOf<HTMLElement>;
+	const notebookViewer = document.querySelector<HTMLElement>(".notebook-viewer")!;
+	const notebookContainer = document.querySelector<HTMLElement>(".notebook-container")!;
+	const spreads = document.querySelectorAll<HTMLElement>(".spread-wrapper");
 	const images = new Map(Array.from(
 		spreads,
 		(spread) => [
 			Number(spread.dataset.spread),
-			spread.querySelector(".scroll-image") as HTMLImageElement,
+			spread.querySelector<HTMLImageElement>(".scroll-image")!,
 		],
 	));
 
@@ -50,8 +50,8 @@ export function initNotebook(pageStore: PageStore, toc: TocApi) {
 		pageStore.set(dest);
 	}
 
-	const prev = document.querySelectorAll(".page-link.prev") as NodeListOf<HTMLButtonElement>;
-	const next = document.querySelectorAll(".page-link.next") as NodeListOf<HTMLButtonElement>;
+	const prev = document.querySelectorAll<HTMLButtonElement>(".page-link.prev");
+	const next = document.querySelectorAll<HTMLButtonElement>(".page-link.next");
 	prev.forEach((prev) => {
 		prev.addEventListener("click", () => flipPage(-1));
 	});
