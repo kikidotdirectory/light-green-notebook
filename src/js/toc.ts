@@ -24,7 +24,7 @@ export function initToc(pageStore: PageStore) {
 
 		// ensure that the whole item is visible
 		const padding = 20; // hardcoded value to compensate for mask-image on tocList
-	 	const destItem = items.get(dest)?.parentElement as HTMLElement | undefined;
+		const destItem = items.get(dest)?.parentElement as HTMLElement | undefined;
 		const destRect = destItem?.getBoundingClientRect();
 		const tocBodyRect = tocBody.getBoundingClientRect();
 		const itemTopOffset = destRect!.top - tocBodyRect.top;
@@ -69,6 +69,15 @@ export function initToc(pageStore: PageStore) {
 		};
 	}
 
+	function setScrollProgress(from: number, progress: number) {
+		const fromItem = items.get(from)?.parentElement as HTMLElement | undefined;
+		if (!fromItem) return;
+		const olRect = tocList.getBoundingClientRect();
+		const itemRect = fromItem.getBoundingClientRect();
+		const base = itemRect.left - olRect.left + tocList.scrollLeft;
+		tocList.scrollLeft = base + progress * fromItem.offsetWidth;
+	}
+
 	function syncCurrent(spread: number) {
 		if (selfInitiated) {
 			selfInitiated = false;
@@ -104,4 +113,8 @@ export function initToc(pageStore: PageStore) {
 	updateCurrent(currentSpread, true);
 
 	pageStore.subscribe(syncCurrent);
+
+	return { setScrollProgress };
 }
+
+export type TocApi = ReturnType<typeof initToc>;

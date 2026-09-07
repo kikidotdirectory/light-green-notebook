@@ -1,9 +1,10 @@
 import { checkMode } from "./mode.ts";
 import { type PageStore } from "./page-state.ts";
+import { type TocApi } from "./toc.ts";
 
 declare const totalSpreads: number;
 
-export function initNotebook(pageStore: PageStore) {
+export function initNotebook(pageStore: PageStore, toc: TocApi) {
 	const notebookViewer = document.querySelector(".notebook-viewer") as HTMLElement;
 	const notebookContainer = document.querySelector(".notebook-container") as HTMLElement;
 	const spreads = document.querySelectorAll(".spread-wrapper") as NodeListOf<HTMLElement>;
@@ -75,14 +76,22 @@ export function initNotebook(pageStore: PageStore) {
 			return { left, right: left + rect.width };
 		}
 
-		const wrapperSnaps = Array.from(notebookContainer.querySelectorAll(".spread-wrapper"))
+		// the cover element has scroll-snap-align: left, this handles that
+		function restLeft(el: Element, span: { left: number; right: number }) {
+			if (getComputedStyle(el).scrollSnapAlign === "center") {
+				return (span.left + span.right) / 2 - containerRect.width / 2;
+			}
+			return span.left;
+		}
+
+		const wrapperSnaps = Array.from(notebookContainer.querySelectorAll<HTMLElement>(".spread-wrapper"))
 			.map((wrapper) => {
-				const spans = Array.from(wrapper.querySelectorAll(".page-snap"))
-					.map((snap) => toContentSpace(snap.getBoundingClientRect()));
+				const snaps = Array.from(wrapper.querySelectorAll(".page-snap"));
+				const spans = snaps.map((snap) => toContentSpace(snap.getBoundingClientRect()));
 				return {
-					spread: Number((wrapper as HTMLElement).dataset.spread),
-					first: spans[0],
-					last: spans[spans.length - 1],
+					spread: Number(wrapper.dataset.spread),
+					first: restLeft(snaps[0], spans[0]),
+					last: restLeft(snaps[snaps.length - 1], spans[spans.length - 1]),
 				};
 			});
 
@@ -91,8 +100,8 @@ export function initNotebook(pageStore: PageStore) {
 			.map(({ last, spread }, i) => {
 				const next = wrapperSnaps[i + 1];
 				return {
-					min: last.left,
-					max: next.first.left,
+					min: last,
+					max: next.first,
 					apply: (progress: number) => {
 						toc.setScrollProgress(spread, progress);
 					},
@@ -110,7 +119,6 @@ export function initNotebook(pageStore: PageStore) {
 			const x = notebookContainer.scrollLeft;
 			for (const r of ranges) {
 				if (x >= r.min && x <= r.max) {
-					console.log((x - r.min) / (r.max - r.min));
 					r.apply((x - r.min) / (r.max - r.min));
 				}
 			}
@@ -118,6 +126,7 @@ export function initNotebook(pageStore: PageStore) {
 		});
 	}, { passive: true });
 
+	// page rendering responds to pageStore updates
 	pageStore.subscribe((pageNum) => {
 		renderSpread(pageNum);
 	});
