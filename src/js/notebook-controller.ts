@@ -5,6 +5,7 @@ declare const totalSpreads: number;
 
 export function initNotebook(pageStore: PageStore) {
 	const notebookViewer = document.querySelector(".notebook-viewer") as HTMLElement;
+	const notebookContainer = document.querySelector(".notebook-container") as HTMLElement;
 	const spreads = document.querySelectorAll(".spread-wrapper") as NodeListOf<HTMLElement>;
 	const images = new Map(Array.from(
 		spreads,
@@ -13,8 +14,6 @@ export function initNotebook(pageStore: PageStore) {
 			spread.querySelector(".scroll-image") as HTMLImageElement,
 		],
 	));
-
-	let pendingEdge: "start" | "end" = "start";
 
 	/* Helpers -------------------------------------------------- */
 
@@ -61,16 +60,71 @@ export function initNotebook(pageStore: PageStore) {
 
 	const mode = checkMode();
 
-	notebookViewer.addEventListener("scroll", () => {
+	/* scroll syncing */
+	// when in single-page mode, the notebook-viewer needs to know when a scroll is switching in between pages so it can update the toc.
+	// to do this, it gets all the spreads and creates a new array containing pairings of the last page of one spread and the first of the next.
+	let ticking = false;
+	let ranges: { min: number; max: number; apply: (progress: number) => void }[] = [];
+
+	function buildRanges() {
+		const containerRect = notebookContainer.getBoundingClientRect();
+		const scrollLeft = notebookContainer.scrollLeft;
+
+		function toContentSpace(rect: DOMRect) {
+			const left = rect.left - containerRect.left + scrollLeft;
+			return { left, right: left + rect.width };
+		}
+
+		const wrapperSnaps = Array.from(notebookContainer.querySelectorAll(".spread-wrapper"))
+			.map((wrapper) => {
+				const spans = Array.from(wrapper.querySelectorAll(".page-snap"))
+					.map((snap) => toContentSpace(snap.getBoundingClientRect()));
+				return {
+					spread: Number((wrapper as HTMLElement).dataset.spread),
+					first: spans[0],
+					last: spans[spans.length - 1],
+				};
+			});
+
+		ranges = wrapperSnaps
+			.slice(0, -1)
+			.map(({ last, spread }, i) => {
+				const next = wrapperSnaps[i + 1];
+				return {
+					min: last.left,
+					max: next.first.left,
+					apply: (progress: number) => {
+						toc.setScrollProgress(spread, progress);
+					},
+				};
+			})
+			.filter((r) => r.max > r.min);
+	}
+
+	notebookContainer.addEventListener("scroll", () => {
 		if (mode.get() !== "single") return;
-		const maxScroll = notebookViewer.scrollWidth - notebookViewer.clientWidth;
-		console.log(maxScroll);
-	});
+		if (ticking) return;
+
+		ticking = true;
+		requestAnimationFrame(() => {
+			const x = notebookContainer.scrollLeft;
+			for (const r of ranges) {
+				if (x >= r.min && x <= r.max) {
+					console.log((x - r.min) / (r.max - r.min));
+					r.apply((x - r.min) / (r.max - r.min));
+				}
+			}
+			ticking = false;
+		});
+	}, { passive: true });
 
 	pageStore.subscribe((pageNum) => {
 		renderSpread(pageNum);
 	});
 
 	mode.subscribe((current) => {
+		// rects are only meaningful once .notebook-container is actually the
+		// active, laid-out scroller, which only happens in single mode
+		if (current === "single") buildRanges();
 	});
 }
