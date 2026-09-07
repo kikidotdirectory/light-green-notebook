@@ -13,12 +13,6 @@ export function initNotebook(pageStore: PageStore) {
 			spread.querySelector(".scroll-image") as HTMLImageElement,
 		],
 	));
-	// one entry per spread, holding its .page-snap targets in left-to-right
-	// order (the cover spread has just one; every other spread has two, one
-	// per physical page)
-	// const pageSnaps = Array.from(
-	// 	scrollContainer.querySelectorAll(".spread-wrapper"),
-	// ).map((wrapper) => Array.from(wrapper.querySelectorAll(".page-snap"))) as HTMLElement[][];
 
 	let pendingEdge: "start" | "end" = "start";
 
@@ -65,14 +59,6 @@ export function initNotebook(pageStore: PageStore) {
 		next.addEventListener("click", () => flipPage(1));
 	});
 
-	// function scrollToSpread(pageNum: number, behavior: ScrollBehavior, edge: "start" | "end" = "start") {
-	// 	const snaps = pageSnaps[pageNum];
-	// 	if (!snaps || snaps.length === 0) return;
-	// 	const target = edge === "end" ? snaps[snaps.length - 1] : snaps[0];
-	// 	const inline = pageNum === 0 ? "start" : "center";
-	// 	target.scrollIntoView({ behavior, inline, block: "nearest" });
-	// }
-
 	const mode = checkMode();
 
 	notebookViewer.addEventListener("scroll", () => {
@@ -83,22 +69,8 @@ export function initNotebook(pageStore: PageStore) {
 
 	pageStore.subscribe((pageNum) => {
 		renderSpread(pageNum);
-		// if (mode.get() === "single") {
-		// 	scrollToSpread(pageNum, "smooth", pendingEdge);
-		// 	pendingEdge = "start";
-		// }
 	});
 
 	mode.subscribe((current) => {
-		// re-sync scroll position on every entry: a hidden (display:none)
-		// scroll container can lose its scrollLeft, and the user may have
-		// navigated pages while in double mode. pendingEdge carries over
-		// from any flip that happened while in double mode, so this lands
-		// on the same side the user was last reading from.
-
-		// if (current === "single") {
-		// 	scrollToSpread(pageStore.get(), "instant", pendingEdge);
-		// 	pendingEdge = "start";
-		// }
 	});
 }
