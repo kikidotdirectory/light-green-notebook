@@ -61,8 +61,15 @@
 }
 
 [data-mode="single"] {
+	&:root {
+		--aspect-ratio: calc(var(--notebook-width) * 2 / var(--notebook-height));
+		--spread-width: calc(180vw * 1.02);
+		--spread-height: calc(var(--spread-width) / var(--aspect-ratio));
+	}
+
 	& .notebook-viewer {
 		padding: 0;
+		max-height: var(--spread-height);
 		height: 100%;
 		min-width: 0;
 	}
@@ -105,7 +112,6 @@
 	}
 
 	& .spread-wrapper[data-spread="0"] {
-		height: 100%;
 		padding-left: 2%;
 		& .page-snap {
 			padding: 0;
