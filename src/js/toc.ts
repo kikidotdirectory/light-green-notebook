@@ -1,4 +1,5 @@
 import type { PageStore } from "./page-state.ts";
+import { onScrollSettle } from "./scroll-settle.ts";
 
 export function initToc(pageStore: PageStore) {
 	const tocBody = document.querySelector(".toc") as HTMLElement;
@@ -10,6 +11,10 @@ export function initToc(pageStore: PageStore) {
 	let selfInitiated = false;
 	// capture the height of a closed details element
 	const closedItem = tocList.querySelector("li:has(details):not(:has(details[open]))") as HTMLElement | null;
+	// true while tocList itself just scrolled tocList.scrollLeft programmatically,
+	// so its own scrollend listener can ignore the resulting event
+	let tocSelfScroll = false;
+	let onScrub: ((spread: number) => void) | undefined;
 
 	// marks `dest` current, then scrolls it fully into view if needed.
 	// alignToTop flag is used to init current item at top of el
@@ -69,13 +74,34 @@ export function initToc(pageStore: PageStore) {
 		};
 	}
 
-	function setScrollProgress(from: number, progress: number) {
-		const fromItem = items.get(from)?.parentElement as HTMLElement | undefined;
-		if (!fromItem) return;
+	// aligns tocList's scroll so `spread`'s item sits at its left edge.
+	// called once a notebook scroll settles rather than live, so there's
+	// never a fractional position to interpolate toward.
+	function scrollToSpread(spread: number) {
+		const item = items.get(spread)?.parentElement as HTMLElement | undefined;
+		if (!item) return;
 		const olRect = tocList.getBoundingClientRect();
-		const itemRect = fromItem.getBoundingClientRect();
-		const base = itemRect.left - olRect.left + tocList.scrollLeft;
-		tocList.scrollLeft = base + progress * fromItem.offsetWidth;
+		const itemRect = item.getBoundingClientRect();
+		const delta = itemRect.left - olRect.left;
+		if (Math.abs(delta) < 1) return;
+		tocSelfScroll = true;
+		tocList.scrollLeft += delta;
+	}
+
+	// finds the item currently sitting at tocList's left edge
+	function currentScrubSpread(): number | undefined {
+		const olRect = tocList.getBoundingClientRect();
+		let closest: number | undefined;
+		let closestDist = Infinity;
+		for (const [spread, details] of items) {
+			const item = details.parentElement as HTMLElement;
+			const dist = Math.abs(item.getBoundingClientRect().left - olRect.left);
+			if (dist < closestDist) {
+				closestDist = dist;
+				closest = spread;
+			}
+		}
+		return closest;
 	}
 
 	function syncCurrent(spread: number) {
@@ -114,7 +140,28 @@ export function initToc(pageStore: PageStore) {
 
 	pageStore.subscribe(syncCurrent);
 
-	return { setScrollProgress };
+	// dragging the toc (mobile) scrubs the notebook to match, once the drag settles
+	onScrollSettle(tocList, () => {
+		if (tocSelfScroll) {
+			tocSelfScroll = false;
+			return;
+		}
+		const spread = currentScrubSpread();
+		if (spread === undefined) return;
+		onScrub?.(spread);
+		if (spread !== currentSpread) {
+			updateCurrent(spread);
+			selfInitiated = true;
+			pageStore.set(spread);
+		}
+	});
+
+	return {
+		scrollToSpread,
+		onScrub: (callback: (spread: number) => void) => {
+			onScrub = callback;
+		},
+	};
 }
 
 export type TocApi = ReturnType<typeof initToc>;

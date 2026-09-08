@@ -1,5 +1,6 @@
 import { checkMode } from "./mode.ts";
 import { type PageStore } from "./page-state.ts";
+import { onScrollSettle } from "./scroll-settle.ts";
 import { type TocApi } from "./toc.ts";
 
 declare const totalSpreads: number;
@@ -62,10 +63,12 @@ export function initNotebook(pageStore: PageStore, toc: TocApi) {
 	const mode = checkMode();
 
 	/* scroll syncing */
-	// when in single-page mode, the notebook-viewer needs to know when a scroll is switching in between pages so it can update the toc.
-	// to do this, it gets all the spreads and creates a new array containing pairings of the last page of one spread and the first of the next.
-	let ticking = false;
-	let ranges: { min: number; max: number; apply: (progress: number) => void }[] = [];
+	// when in single-page mode, the notebook-viewer needs to know when a scroll settles on a
+	// different spread so it can update the toc (and vice versa, when the toc is dragged).
+	// true while notebookContainer itself just scrolled programmatically (from a toc drag),
+	// so its own settle handler can ignore the resulting event
+	let notebookSelfScroll = false;
+	let spreadStarts = new Map<number, number>();
 
 	function buildRanges() {
 		const containerRect = notebookContainer.getBoundingClientRect();
@@ -84,47 +87,55 @@ export function initNotebook(pageStore: PageStore, toc: TocApi) {
 			return span.left;
 		}
 
-		const wrapperSnaps = Array.from(notebookContainer.querySelectorAll<HTMLElement>(".spread-wrapper"))
-			.map((wrapper) => {
-				const snaps = Array.from(wrapper.querySelectorAll(".page-snap"));
-				const spans = snaps.map((snap) => toContentSpace(snap.getBoundingClientRect()));
-				return {
-					spread: Number(wrapper.dataset.spread),
-					first: restLeft(snaps[0], spans[0]),
-					last: restLeft(snaps[snaps.length - 1], spans[spans.length - 1]),
-				};
-			});
-
-		ranges = wrapperSnaps
-			.slice(0, -1)
-			.map(({ last, spread }, i) => {
-				const next = wrapperSnaps[i + 1];
-				return {
-					min: last,
-					max: next.first,
-					apply: (progress: number) => {
-						toc.setScrollProgress(spread, progress);
-					},
-				};
-			})
-			.filter((r) => r.max > r.min);
+		spreadStarts = new Map(
+			Array.from(notebookContainer.querySelectorAll<HTMLElement>(".spread-wrapper"))
+				.map((wrapper) => {
+					const snaps = Array.from(wrapper.querySelectorAll(".page-snap"));
+					const spans = snaps.map((snap) => toContentSpace(snap.getBoundingClientRect()));
+					snaps.map((snap) => console.log(snap, snap.getBoundingClientRect()));
+					return [Number(wrapper.dataset.spread), restLeft(snaps[0], spans[0])] as const;
+				}),
+		);
+		console.log(spreadStarts);
 	}
 
-	notebookContainer.addEventListener("scroll", () => {
-		if (mode.get() !== "single") return;
-		if (ticking) return;
-
-		ticking = true;
-		requestAnimationFrame(() => {
-			const x = notebookContainer.scrollLeft;
-			for (const r of ranges) {
-				if (x >= r.min && x <= r.max) {
-					r.apply((x - r.min) / (r.max - r.min));
-				}
+	// finds the spread whose rest position is nearest to the notebook's current scroll
+	function nearestSpreadToScroll(x: number): number | undefined {
+		let closest: number | undefined;
+		let closestDist = Infinity;
+		for (const [spread, start] of spreadStarts) {
+			const dist = Math.abs(start - x);
+			if (dist < closestDist) {
+				closestDist = dist;
+				closest = spread;
 			}
-			ticking = false;
-		});
-	}, { passive: true });
+		}
+		return closest;
+	}
+
+	// dragging the toc (mobile) calls this to scrub the notebook to match
+	function scrollNotebookToSpread(spread: number) {
+		if (mode.get() !== "single") return;
+		const x = spreadStarts.get(spread);
+		if (x === undefined) return;
+		if (Math.abs(notebookContainer.scrollLeft - x) < 1) return;
+		notebookSelfScroll = true;
+		notebookContainer.scrollLeft = x;
+	}
+	toc.onScrub(scrollNotebookToSpread);
+
+	onScrollSettle(notebookContainer, () => {
+		if (notebookSelfScroll) {
+			notebookSelfScroll = false;
+			return;
+		}
+		if (mode.get() !== "single") return;
+
+		const dest = nearestSpreadToScroll(notebookContainer.scrollLeft);
+		if (dest === undefined) return;
+		toc.scrollToSpread(dest);
+		if (dest !== pageStore.get()) pageStore.set(dest);
+	});
 
 	// page rendering responds to pageStore updates
 	pageStore.subscribe((pageNum) => {
