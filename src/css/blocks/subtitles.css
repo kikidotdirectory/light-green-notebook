@@ -4,3 +4,7 @@
 	width: 100%;
 	text-align: center;
 }
+
+[data-mode="single"] .subtitles {
+	padding: 0 5vw; /* match padding to page-width set in ./notebook-viewer.css */
+}
