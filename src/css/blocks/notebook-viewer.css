@@ -19,6 +19,7 @@
 }
 
 .spread-image {
+	aspect-ratio: var(--spread-aspect-ratio);
 	object-fit: cover;
 	width: 100%;
 	pointer-events: none;
@@ -58,6 +59,10 @@
 	height: 100%;
 	width: auto;
 	max-width: none;
+}
+
+.spread-image[data-spread="0"] {
+	aspect-ratio: var(--cover-aspect-ratio);
 }
 
 [data-mode="single"] {
