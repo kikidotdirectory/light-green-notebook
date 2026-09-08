@@ -1,0 +1,59 @@
+---
+title: snap-point debug
+forceMode: single
+---
+
+{{ layout "layouts/base.vto" }}
+	{{ set head }}
+		{{
+			set layoutColRem = Math.round(notebooks.lgn.dimensions.width * config["rem-per-inch"] * 2 * 100)
+			/ 100
+		}}
+		{{
+			set layoutRowRem = Math.round(notebooks.lgn.dimensions.height * config["rem-per-inch"] * 100)
+			/ 100
+		}}
+		<style>
+		:root {
+			--layout-col: {{ layoutColRem }}rem;
+			--layout-row: {{ layoutRowRem }}rem;
+			--in-rem-ratio: {{ config["rem-per-inch"] }}rem;
+			--notebook-width: {{ notebooks.lgn.dimensions.width }};
+			--notebook-height: {{ notebooks.lgn.dimensions.height }};
+		}
+		</style>
+	{{ /set }}
+
+	{{# forceMode (see layouts/base.vto + js/mode.ts) pins this page to
+		[data-mode="single"] regardless of viewport, since the snap points
+		this page exists to visualize only appear in that mode #}}
+
+	<header>
+		{{ comp.tocList() }}
+	</header>
+	<main class="notebook-viewer snap-debug">
+		<figure class="notebook-container">
+			{{ set snapIndex = 0 }}
+			{{
+				for 
+				spread of Array.from(
+					{ length: notebooks.lgn.totalSpreads },
+					(_, i) => i,
+				)
+
+			}}
+				<div class="spread-wrapper" data-spread="{{ spread }}">
+					<div class="pages-wrapper">
+						{{ if spread !== 0 }}
+							{{ set snapIndex = snapIndex + 1 }}
+							<div class="page-snap"><span>{{ snapIndex }}</span></div>
+						{{ /if }}
+						{{ set snapIndex = snapIndex + 1 }}
+						<div class="page-snap"><span>{{ snapIndex }}</span></div>
+					</div>
+				</div>
+			{{ /for }}
+		</figure>
+	</main>
+	{{ comp.marks() }}
+{{ /layout }}

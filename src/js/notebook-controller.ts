@@ -1,26 +1,21 @@
 import { checkMode } from "./mode.ts";
 import { type PageStore } from "./page-state.ts";
+import { onScrollSettle } from "./scroll-settle.ts";
+import { type TocApi } from "./toc.ts";
 
 declare const totalSpreads: number;
 
-export function initNotebook(pageStore: PageStore) {
-	const notebookViewer = document.querySelector(".notebook-viewer") as HTMLElement;
-	const spreads = document.querySelectorAll(".spread-wrapper") as NodeListOf<HTMLElement>;
+export function initNotebook(pageStore: PageStore, toc: TocApi) {
+	const notebookViewer = document.querySelector<HTMLElement>(".notebook-viewer")!;
+	const notebookContainer = document.querySelector<HTMLElement>(".notebook-container")!;
+	const spreads = document.querySelectorAll<HTMLElement>(".spread-wrapper");
 	const images = new Map(Array.from(
 		spreads,
 		(spread) => [
 			Number(spread.dataset.spread),
-			spread.querySelector(".scroll-image") as HTMLImageElement,
+			spread.querySelector<HTMLImageElement>(".scroll-image")!,
 		],
 	));
-	// one entry per spread, holding its .page-snap targets in left-to-right
-	// order (the cover spread has just one; every other spread has two, one
-	// per physical page)
-	// const pageSnaps = Array.from(
-	// 	scrollContainer.querySelectorAll(".spread-wrapper"),
-	// ).map((wrapper) => Array.from(wrapper.querySelectorAll(".page-snap"))) as HTMLElement[][];
-
-	let pendingEdge: "start" | "end" = "start";
 
 	/* Helpers -------------------------------------------------- */
 
@@ -56,8 +51,8 @@ export function initNotebook(pageStore: PageStore) {
 		pageStore.set(dest);
 	}
 
-	const prev = document.querySelectorAll(".page-link.prev") as NodeListOf<HTMLButtonElement>;
-	const next = document.querySelectorAll(".page-link.next") as NodeListOf<HTMLButtonElement>;
+	const prev = document.querySelectorAll<HTMLButtonElement>(".page-link.prev");
+	const next = document.querySelectorAll<HTMLButtonElement>(".page-link.next");
 	prev.forEach((prev) => {
 		prev.addEventListener("click", () => flipPage(-1));
 	});
@@ -65,40 +60,91 @@ export function initNotebook(pageStore: PageStore) {
 		next.addEventListener("click", () => flipPage(1));
 	});
 
-	// function scrollToSpread(pageNum: number, behavior: ScrollBehavior, edge: "start" | "end" = "start") {
-	// 	const snaps = pageSnaps[pageNum];
-	// 	if (!snaps || snaps.length === 0) return;
-	// 	const target = edge === "end" ? snaps[snaps.length - 1] : snaps[0];
-	// 	const inline = pageNum === 0 ? "start" : "center";
-	// 	target.scrollIntoView({ behavior, inline, block: "nearest" });
-	// }
-
 	const mode = checkMode();
 
-	notebookViewer.addEventListener("scroll", () => {
+	/* scroll syncing */
+	// when in single-page mode, the notebook-viewer needs to know when a scroll settles on a
+	// different spread so it can update the toc (and vice versa, when the toc is dragged).
+	// true while notebookContainer itself just scrolled programmatically (from a toc drag),
+	// so its own settle handler can ignore the resulting event
+	let notebookSelfScroll = false;
+	let spreadStarts = new Map<number, number>();
+
+	function buildRanges() {
+		const containerRect = notebookContainer.getBoundingClientRect();
+		const scrollLeft = notebookContainer.scrollLeft;
+
+		function toContentSpace(rect: DOMRect) {
+			const left = rect.left - containerRect.left + scrollLeft;
+			return { left, right: left + rect.width };
+		}
+
+		// the cover element has scroll-snap-align: left, this handles that
+		function restLeft(el: Element, span: { left: number; right: number }) {
+			if (getComputedStyle(el).scrollSnapAlign === "center") {
+				return (span.left + span.right) / 2 - containerRect.width / 2;
+			}
+			return span.left;
+		}
+
+		spreadStarts = new Map(
+			Array.from(notebookContainer.querySelectorAll<HTMLElement>(".spread-wrapper"))
+				.map((wrapper) => {
+					const snaps = Array.from(wrapper.querySelectorAll(".page-snap"));
+					const spans = snaps.map((snap) => toContentSpace(snap.getBoundingClientRect()));
+					snaps.map((snap) => console.log(snap, snap.getBoundingClientRect()));
+					return [Number(wrapper.dataset.spread), restLeft(snaps[0], spans[0])] as const;
+				}),
+		);
+		console.log(spreadStarts);
+	}
+
+	// finds the spread whose rest position is nearest to the notebook's current scroll
+	function nearestSpreadToScroll(x: number): number | undefined {
+		let closest: number | undefined;
+		let closestDist = Infinity;
+		for (const [spread, start] of spreadStarts) {
+			const dist = Math.abs(start - x);
+			if (dist < closestDist) {
+				closestDist = dist;
+				closest = spread;
+			}
+		}
+		return closest;
+	}
+
+	// dragging the toc (mobile) calls this to scrub the notebook to match
+	function scrollNotebookToSpread(spread: number) {
 		if (mode.get() !== "single") return;
-		const maxScroll = notebookViewer.scrollWidth - notebookViewer.clientWidth;
-		console.log(maxScroll);
+		const x = spreadStarts.get(spread);
+		if (x === undefined) return;
+		if (Math.abs(notebookContainer.scrollLeft - x) < 1) return;
+		notebookSelfScroll = true;
+		notebookContainer.scrollLeft = x;
+	}
+	toc.onScrub(scrollNotebookToSpread);
+
+	onScrollSettle(notebookContainer, () => {
+		if (notebookSelfScroll) {
+			notebookSelfScroll = false;
+			return;
+		}
+		if (mode.get() !== "single") return;
+
+		const dest = nearestSpreadToScroll(notebookContainer.scrollLeft);
+		if (dest === undefined) return;
+		toc.scrollToSpread(dest);
+		if (dest !== pageStore.get()) pageStore.set(dest);
 	});
 
+	// page rendering responds to pageStore updates
 	pageStore.subscribe((pageNum) => {
 		renderSpread(pageNum);
-		// if (mode.get() === "single") {
-		// 	scrollToSpread(pageNum, "smooth", pendingEdge);
-		// 	pendingEdge = "start";
-		// }
 	});
 
 	mode.subscribe((current) => {
-		// re-sync scroll position on every entry: a hidden (display:none)
-		// scroll container can lose its scrollLeft, and the user may have
-		// navigated pages while in double mode. pendingEdge carries over
-		// from any flip that happened while in double mode, so this lands
-		// on the same side the user was last reading from.
-
-		// if (current === "single") {
-		// 	scrollToSpread(pageStore.get(), "instant", pendingEdge);
-		// 	pendingEdge = "start";
-		// }
+		// rects are only meaningful once .notebook-container is actually the
+		// active, laid-out scroller, which only happens in single mode
+		if (current === "single") buildRanges();
 	});
 }

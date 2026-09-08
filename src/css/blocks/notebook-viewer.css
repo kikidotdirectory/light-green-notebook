@@ -19,6 +19,7 @@
 }
 
 .spread-image {
+	aspect-ratio: var(--spread-aspect-ratio);
 	object-fit: cover;
 	width: 100%;
 	pointer-events: none;
@@ -60,38 +61,39 @@
 	max-width: none;
 }
 
+.spread-image[data-spread="0"] {
+	aspect-ratio: var(--cover-aspect-ratio);
+}
+
 [data-mode="single"] {
-	& .notebook-viewer:has(> .notebook-container) {
+	&:root {
+		--aspect-ratio: calc(var(--notebook-width) * 2 / var(--notebook-height));
+		--spread-width: calc(180vw * 1.02);
+		--spread-height: calc(var(--spread-width) / var(--aspect-ratio));
+	}
+
+	& .notebook-viewer {
 		padding: 0;
+		max-height: var(--spread-height);
+		height: 100%;
+		min-width: 0;
 	}
 
 	& .notebook-container {
 		display: flex;
 		overflow-x: scroll;
 		scroll-snap-type: x mandatory;
-	}
-
-	/* todo: figure out separation of css between notebook and toc
-	 */
-	& .notebook-container,
-	& .toc ol {
-		scrollbar-width: none; /* Firefox */
-		-ms-overflow-style: none; /* IE 10+ */
-		&::-webkit-scrollbar {
-			background: transparent; /* Chrome/Safari/Webkit */
-			height: 0px;
-		}
+		height: inherit;
 	}
 
 	& .notebook-container .spread-wrapper {
 		position: relative;
-		flex: 0 0 190%;
-		width: 100%;
+		flex: 0 0 auto;
 		height: 100%;
 		display: block;
 
 		& .spread-image {
-			width: 100%;
+			width: auto;
 			height: 100%;
 			object-fit: contain;
 			user-select: none;
@@ -115,10 +117,6 @@
 	}
 
 	& .spread-wrapper[data-spread="0"] {
-		flex: 0 0 110%;
-		width: 100%;
-		height: auto;
-
 		padding-left: 2%;
 		& .page-snap {
 			padding: 0;
@@ -126,4 +124,41 @@
 			padding-left: 2%;
 		}
 	}
+
+	/* todo: figure out separation of css between notebook and toc
+	 */
+	& .notebook-container,
+	& .toc ol {
+		scrollbar-width: none; /* Firefox */
+		-ms-overflow-style: none; /* IE 10+ */
+		&::-webkit-scrollbar {
+			background: transparent; /* Chrome/Safari/Webkit */
+			height: 0px;
+		}
+	}
+
+	/* snap-point debug view (src/debug-snaps.vto): no .spread-image is
+	 * rendered there, so .spread-wrapper's width - normally driven by the
+	 * loaded image's intrinsic aspect ratio - has to come from the
+	 * notebook's own declared dimensions instead. .page-snap otherwise
+	 * exists only as an invisible scroll-snap target/click zone; here it's
+	 * made visible and labeled so its exact size can be inspected. */
+	& .notebook-viewer.snap-debug .spread-wrapper {
+		aspect-ratio: var(--notebook-width) / var(--notebook-height);
+
+		&:not([data-spread="0"]) {
+			aspect-ratio: calc(var(--notebook-width) * 2) / var(--notebook-height);
+		}
+	}
+}
+
+.notebook-viewer.snap-debug .page-snap {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: color-mix(in srgb, canvasText 8%, transparent);
+	outline: 1px solid color-mix(in srgb, canvasText 35%, transparent);
+	outline-offset: -1px;
+	font-size: 2rem;
+	color: canvasText;
 }

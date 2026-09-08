@@ -1,5 +1,5 @@
 body {
-	height: 100vh;
+	min-height: 100svh;
 	padding: var(--size-4-3);
 
 	display: grid;
@@ -12,7 +12,7 @@ body {
 	transition: grid-template-columns 500ms cubic-bezier(0.08, 0.9, 0.11, 1);
 }
 
-main {
+.notebook-viewer {
 	grid-area: book;
 }
 
@@ -45,14 +45,20 @@ main {
 
 [data-mode="single"] {
 	& body {
+		--layout-header: 5lh;
+		--layout-footer: 3lh;
+		--layout-book: calc(100svh - var(--layout-header) - var(--layout-footer));
+
+		padding: 0;
+
 		grid-template-columns: 1fr;
-		grid-template-rows: minmax(5lh, 10lh) 1fr 1fr;
+		grid-template-rows:
+			var(--layout-header)
+			var(--layout-book)
+			var(--layout-footer);
 		grid-template-areas:
 			"header"
 			"book"
 			"footer";
-		padding: 0;
-
-		height: 100vh;
 	}
 }

@@ -60,6 +60,10 @@
 }
 
 [data-mode="single"] .toc {
+	--layout-padding: var(--size-4-2);
+	padding-left: 0;
+	padding-right: 0;
+
 	& ol {
 		display: flex;
 		overflow-x: auto;
@@ -69,9 +73,12 @@
 		width: 100%;
 		height: 100%;
 	}
+
 	& ol > li {
 		flex: 0 0 100%;
 		scroll-snap-align: center;
+		padding: 0 var(--layout-padding);
+
 		& .spine {
 			height: 1cap;
 		}
