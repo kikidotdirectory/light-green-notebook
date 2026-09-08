@@ -92,11 +92,9 @@ export function initNotebook(pageStore: PageStore, toc: TocApi) {
 				.map((wrapper) => {
 					const snaps = Array.from(wrapper.querySelectorAll(".page-snap"));
 					const spans = snaps.map((snap) => toContentSpace(snap.getBoundingClientRect()));
-					snaps.map((snap) => console.log(snap, snap.getBoundingClientRect()));
 					return [Number(wrapper.dataset.spread), restLeft(snaps[0], spans[0])] as const;
 				}),
 		);
-		console.log(spreadStarts);
 	}
 
 	// finds the spread whose rest position is nearest to the notebook's current scroll
